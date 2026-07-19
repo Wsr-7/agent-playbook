@@ -40,6 +40,7 @@
 | workflow | ship | 复杂交付：task packet(spec/task/review)、可执行验收标准、gate、独立审查、循环化出口 |
 | workflow | review-worker | 验收 agent 产出：确定性检查先行，双角色写入协议（嵌入式只写 review.md） |
 | workflow | handoff | 会话压缩交接（跨会话/跨 agent） |
+| workflow | bootstrap | 项目冷启动：扫描仓库 → 生成 STATE.md + lessons + 真实命令版 gate.ps1 并实跑验证 |
 | elicitation | grilling / grill-me / grill-with-docs | 人侧拷问引擎 + 两个薄入口 |
 | elicitation | domain-modeling | 术语表(CONTEXT.md) + ADR 纪律 |
 | debugging | diagnosing-bugs | 硬 bug：红灯循环优先，无复现命令不许提假设 |
@@ -63,6 +64,9 @@ skill 是通用约定，每个项目还需两个落地件（复制模板后按�
 
 - `templates/gate.ps1` → 项目的 `scripts/gate.ps1`：确定性验收门（测试/构建/git 状态），review-worker 和 ship 会自动找到并优先执行它
 - `templates/STATE.md` → 项目根或本地文档目录：循环状态文件，记录进行中/已完成/待人工验证/lessons
+- `templates/hooks/inject-state.ps1` → `~/.claude/hooks/`：SessionStart hook，会话启动时强制注入项目 STATE.md（安装方式见文件头注释）——强制注入优于指望模型自觉去读
+
+新项目接入最快路径：装好 skills 后在项目里说 `/bootstrap`，三件套自动生成并实跑 gate 验证。
 
 ## 来源与致谢
 

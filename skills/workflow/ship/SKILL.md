@@ -161,7 +161,7 @@ Do not declare independent acceptance until the reviewer reports no unresolved b
 
 Map every acceptance criterion to fresh evidence. Run the smallest reliable integration checks appropriate to the task, such as targeted tests, type checks, builds, lint, logs, rendered output, or a manual reproduction.
 
-Update the Handoff section with the final state and `review.md` with the independent verdict. If a required check or independent review cannot run, preserve the exact continuation point and do not claim full completion. When a finding or user correction reveals a repeatable failure pattern, append one line to the project's lessons file (create it if absent) so future runs inherit the fix.
+Update the Handoff section with the final state and `review.md` with the independent verdict. If a required check or independent review cannot run, preserve the exact continuation point and do not claim full completion. When a finding or user correction reveals a repeatable failure pattern, append one line to the project's lessons file (create it if absent) so future runs inherit the fix. Beyond lessons: if the run established a new convention or prevention rule — a naming pattern, a forbidden API, a required check — promote it into the project's standing guidelines (CLAUDE.md, AGENTS.md, or spec docs). Lessons record history; guidelines change behavior.
 
 Finish with:
 
