@@ -66,6 +66,8 @@ skill 是通用约定，每个项目还需两个落地件（复制模板后按�
 - `templates/STATE.md` → 项目根或本地文档目录：循环状态文件，记录进行中/已完成/待人工验证/lessons
 - `templates/hooks/inject-state.ps1` → `~/.claude/hooks/`：SessionStart hook，会话启动时强制注入项目 STATE.md（安装方式见文件头注释）——强制注入优于指望模型自觉去读
 
+Hook 是可选增强，不是依赖：平台不支持 hooks 时，spine 的开工规则会以 prose 方式兜底（开工先读 STATE.md 和 lessons）——概率性但通常有效；支持 hooks 的平台装上后升级为确定性注入。所有 skill 在无 hook 环境下功能完整。
+
 新项目接入最快路径：装好 skills 后在项目里说 `/bootstrap`，三件套自动生成并实跑 gate 验证。
 
 ## 来源与致谢

@@ -70,7 +70,7 @@ The ladder shortens the solution, never the reading — understand the problem e
 ## 7. Guardrails
 
 - No secrets in code, logs, or output. Validate untrusted input at boundaries. Least privilege.
-- At the start of work in a repo, read its lessons file if one exists — it is the memory of past corrections, and it doesn't exist unless you read it. A user correction or repeated mistake becomes one line in it (create the file if absent).
+- At the start of work in a repo, read its STATE.md (loop state — check root, `.local/`, `docs/`) and its lessons file, if they exist and are not already injected into context. Files are memory, and memory doesn't exist unless you read it. A user correction or repeated mistake becomes one line in the lessons file (create it if absent).
 
 ## 8. Named failure modes
 
