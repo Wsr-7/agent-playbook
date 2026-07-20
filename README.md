@@ -136,7 +136,7 @@ Hook 是可选增强，不是依赖：平台不支持 hooks 时，groundwork 的
 
 - grilling、grill-me、grill-with-docs、domain-modeling、diagnosing-bugs、resolving-merge-conflicts、handoff、writing-great-skills 源自 [mattpocock/skills](https://github.com/mattpocock/skills)（MIT），部分经过修改（触发词收窄、悬空引用修复、可移植性调整）
 - groundwork 融合了 karpathy 编码守则、ai-coding-agent-guidelines 的存活条款与 [ponytail](https://github.com/DietrichGebert/ponytail) 极简主义阶梯的精华
-- 插件清单结构（marketplace.json/plugin.json 多平台约定、OpenCode 符号链接模式）参考了 [ponytail](https://github.com/DietrichGebert/ponytail) 与 [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) 的真实实现
+- 插件清单结构参考了两个真实发布的插件仓库：Claude Code / Codex / `.agents` 通用清单的写法、OpenCode 符号链接模式，来自 [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills)；GitHub Copilot CLI 的 `.github/plugin/` 结构来自 [ponytail](https://github.com/DietrichGebert/ponytail)——addyosmani/agent-skills 本身不含 Copilot 支持，这条清单未经其验证，也未经本地 `copilot` CLI 实测
 - 工作流设计参考 Anthropic Claude Code 团队关于 loop engineering 的实践（gate、state file、maker/checker 分离、硬停止），部分理念借鉴自 [Trellis](https://github.com/mindfold-ai/Trellis)（状态注入 hook、冷启动、spec 晋升闭环）
 
 ## License
