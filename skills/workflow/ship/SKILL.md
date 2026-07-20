@@ -34,6 +34,7 @@ tasks/<task-slug>/
   spec.md      # the contract; effectively frozen after approval
   task.md      # Plan and Handoff sections; churns during execution
   review.md    # owned by the independent reviewer
+  research/    # optional: planning-time research artifacts
 ```
 
 - `spec.md`: outcome, acceptance criteria, constraints, non-goals, and material open questions. After approval treat it as frozen: any edit is a scope change and needs the user's consent. It stays load-bearing after planning — the reviewer accepts against it, re-planning re-derives from it, and constraints and non-goals live nowhere else.
@@ -41,7 +42,7 @@ tasks/<task-slug>/
 - `task.md` `## Handoff`: current state, decisions, modified files or artifacts, evidence, blockers, owners, and exact next step.
 - `review.md`: independent reviewer findings, evidence, disposition, and re-review status. The reviewer owns this document or its returned content.
 
-One writer role per file: spec belongs to the planner and user, task to the implementers, review to the reviewer. Split Plan and Handoff further only when several implementers work the packet concurrently.
+One writer role per file: spec belongs to the planner and user, task to the implementers, review to the reviewer. Split Plan and Handoff further only when several implementers work the packet concurrently. Planning-time research lands in `research/` inside the packet; cite those files from the Spec or Plan instead of pasting their content.
 
 Keep the task packet concise and current. Update the affected document whenever a decision, scope boundary, owner, result, or next step changes. Never leave a stale plan as the handoff source.
 
@@ -128,7 +129,7 @@ Implementation agents must run their own checks, but those checks are evidence f
 
 Before spawning the reviewer, run the deterministic gate: the project's gate script when one exists (`scripts/gate.*` or equivalent), otherwise the smallest objective set — build, lint, tests, and the executable acceptance checks from the Spec. Any gate failure returns the work to the implementer; do not spend reviewer effort on work the gate rejects. If the gate fails twice in a row on the same slice, stop and report to the user instead of looping. Never skip, weaken, or disable a failing check to make the gate pass — fix it or escalate. A reviewer without a gate is a second optimist: opinions cannot fail work, exit codes can.
 
-After the gate passes, assign a separate reviewer subagent that did not implement the work. Give it fresh context and read-only permissions where the platform supports them.
+After the gate passes, assign a separate reviewer subagent that did not implement the work. Give it fresh context and read-only permissions where the platform supports them. On Claude Code, prefer the dedicated `reviewer` agent definition distributed with these skills — it carries no edit tools, so checker independence is enforced by tool policy rather than prose.
 
 Provide the reviewer with the task packet, final diff or artifact, and commands needed to inspect the result. Do not provide the implementer's desired verdict or hide known uncertainties.
 

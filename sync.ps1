@@ -20,3 +20,14 @@ foreach ($dest in $dests) {
     }
     Write-Host ("synced {0} skills -> {1}" -f @($skillDirs).Count, $dest)
 }
+
+# Claude Code extras: agent definitions ride along with the claude target.
+if ($Target -in @('claude', 'all')) {
+    $agentSrc = Join-Path $PSScriptRoot 'templates\agents'
+    if (Test-Path $agentSrc) {
+        $agentDest = Join-Path $env:USERPROFILE '.claude\agents'
+        New-Item -ItemType Directory -Force $agentDest | Out-Null
+        Copy-Item "$agentSrc\*.md" $agentDest -Force
+        Write-Host ("synced agent defs -> {0}" -f $agentDest)
+    }
+}
