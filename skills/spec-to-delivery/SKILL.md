@@ -1,9 +1,9 @@
 ---
-name: ship
-description: Docs-first spec-to-delivery workflow for complex, multi-module, or multi-agent work — durable task packet, executable acceptance checks, deterministic gate, independent review. Use when the user invokes /ship (Codex: $ship) or asks for spec-first planning, durable plans, TDD delivery, adversarial review, cross-agent handoff, or verifiable delivery.
+name: spec-to-delivery
+description: Docs-first spec-to-delivery workflow for complex, multi-module, or multi-agent work — durable task packet, executable acceptance checks, deterministic gate, independent review. Use when the user invokes /spec-to-delivery (Codex: $spec-to-delivery) or asks for spec-first planning, durable plans, TDD delivery, adversarial review, cross-agent handoff, or verifiable delivery.
 ---
 
-# Ship — spec-to-delivery workflow
+# Spec to Delivery
 
 Use the smallest workflow that preserves durable decisions, clean handoffs, and independent acceptance. Reuse requirements, plans, and repository conventions that already exist.
 
@@ -181,10 +181,10 @@ When the same task shape recurs on a schedule or stream (CI triage, dependency b
 ## Invocation examples
 
 ```text
-/ship Implement this feature with durable task documents and independent review.
-/ship Plan only; write a cross-session task packet and do not modify implementation files.
-/ship Use parallel implementation agents for disjoint work and a separate adversarial reviewer agent.
-/ship Fix this bug: reproduce it with a failing test first, gate on the suite, then independent review.
+/spec-to-delivery Implement this feature with durable task documents and independent review.
+/spec-to-delivery Plan only; write a cross-session task packet and do not modify implementation files.
+/spec-to-delivery Use parallel implementation agents for disjoint work and a separate adversarial reviewer agent.
+/spec-to-delivery Fix this bug: reproduce it with a failing test first, gate on the suite, then independent review.
 ```
 
-(Codex uses `$ship` in place of `/ship`.)
+(Codex uses `$spec-to-delivery` in place of `/spec-to-delivery`.)
