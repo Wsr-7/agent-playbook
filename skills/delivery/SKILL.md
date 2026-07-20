@@ -164,6 +164,17 @@ Map every acceptance criterion to fresh evidence. Run the smallest reliable inte
 
 Update the Handoff section with the final state and `review.md` with the independent verdict. If a required check or independent review cannot run, preserve the exact continuation point and do not claim full completion. When a finding or user correction reveals a repeatable failure pattern, append one line to the project's lessons file (create it if absent) so future runs inherit the fix. Beyond lessons: if the run established a new convention or prevention rule — a naming pattern, a forbidden API, a required check — promote it into the project's standing guidelines (CLAUDE.md, AGENTS.md, or spec docs). Lessons record history; guidelines change behavior.
 
+If this change altered the system's outward contract — an API, a CLI surface, a schema, an externally observable behavior — record the delta explicitly so it stays reviewable and traceable, using `ADDED` / `MODIFIED` / `REMOVED` requirement lines in `review.md` or the delivery report:
+
+```text
+## MODIFIED Requirements
+### Requirement: <capability>
+- WAS: <prior contract>
+- NOW: <new contract>
+```
+
+This keeps contract drift visible in one place. If the project already maintains a durable spec of current system behavior (e.g. an OpenSpec `specs/` tree), fold the delta back into it; if not, the delta in the delivery record is enough — do not stand up a full spec-tracking system unless the project's scale actually demands it.
+
 Finish with:
 
 ```text
