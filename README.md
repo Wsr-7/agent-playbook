@@ -1,6 +1,6 @@
 # agent-playbook
 
-个人 AI coding-agent playbook：一条从需求拷问到交付验收的完整链路。以 skill 为主体，跨 Claude Code、Codex CLI、OpenCode、GitHub Copilot CLI 分发。
+一套根据个人工作习惯和经验沉淀的 AI coding-agent playbook：一条从需求拷问到交付验收的完整链路。出发点是去掉 superpowers 这类重型框架的约束，只保留在强模型时代仍改变行为的部分，再吸收不同优秀 skill / plugin 的思想为己所用——既有自己的沉淀（如 delivery、review-worker、gate 体系），也有直接照搬并按需改造的成熟 skill（如源自 mattpocock 的 grilling 系列）。
 
 ## 设计哲学
 
@@ -69,7 +69,7 @@ claude plugin marketplace add Wsr-7/agent-playbook
 claude plugin install agent-playbook@agent-playbook
 ```
 
-Private repositories require collaborator access. Skills trigger automatically on matching requests, or invoke directly: `/groundwork`, `/delivery`. Local path install: `claude --plugin-dir "path/to/agent-playbook"`.
+私有仓库需先给协作者开访问权限。skill 会在匹配的请求上自动触发，也可手动调用：`/groundwork`、`/delivery`。本地路径安装：`claude --plugin-dir "path/to/agent-playbook"`。
 
 ### Codex CLI
 
@@ -78,15 +78,15 @@ codex plugin marketplace add Wsr-7/agent-playbook
 codex plugin add agent-playbook@agent-playbook
 ```
 
-Invoke with `@skill-name` (e.g. `@groundwork`), or describe the task and let Codex select. Codex has no native agent-persona support — `agents/reviewer.md` ships in the plugin cache but is not invokable as a subagent; trigger the `review-worker` skill directly instead.
+用 `@skill-name` 触发（如 `@groundwork`），或直接描述任务让 Codex 自行选择。Codex 不支持 agent persona——`agents/reviewer.md` 会随插件进入缓存，但无法作为子 agent 调用；需要审查时直接触发 `review-worker` skill。
 
 ### OpenCode
 
-`.opencode/skills` (symlinked to `skills/`) is discovered natively via OpenCode's built-in `skill` tool — no configuration required. Clone the repository so the directory is reachable from your project.
+`.opencode/skills`（符号链接指向 `skills/`）由 OpenCode 内置的 `skill` 工具原生发现，无需任何配置。克隆仓库使该目录能被项目访问即可。
 
 ### GitHub Copilot
 
-Copilot scans one of `.github/skills`, `.claude/skills`, or `.agents/skills`; this repository provides `.github/skills`. Agent persona files must end in `.agent.md` — plain `.md` is silently ignored. `.github/agents/reviewer.agent.md` follows this convention; invoke with `@reviewer` in Copilot Chat.
+Copilot 扫描 `.github/skills`、`.claude/skills`、`.agents/skills` 三者之一，本仓库提供 `.github/skills`。agent persona 文件名必须以 `.agent.md` 结尾——普通 `.md` 会被静默忽略。`.github/agents/reviewer.agent.md` 遵循此约定，在 Copilot Chat 里用 `@reviewer` 调用。
 
 ### 其他 agent
 
@@ -104,18 +104,11 @@ Hook 是可选增强，不是依赖：平台不支持 hooks 时，groundwork 的
 
 新项目接入最快路径：装好插件后在项目里说 `/bootstrap`，三件套自动生成并实跑 gate 验证。
 
-## 进化触发器（记录在案，触发前不做）
-
-- 项目 CLAUDE.md 超过约 200 行、或不同模块的约定开始互相冲突 → 参考 Trellis 的 spec 树：按模块拆分域规范，按需注入
-- 并行任务多到 STATE.md 手工维护吃力 → 再评估任务状态机（这是引入运行时脚本依赖的唯一正当理由）
-- 需要独立的斜杠命令层（`/build` `/plan` `/test` 等，参考 addyosmani/agent-skills 的 commands/ 设计）→ 当前用 skill 自动触发 + `/skill-name` 已覆盖同等能力，重复了才值得加
-- Gemini CLI 或其他平台出现真实使用需求 → 再补对应清单，不预先占位
-
 ## 来源与致谢
 
 - grilling、grill-me、grill-with-docs、domain-modeling、diagnosing-bugs、resolving-merge-conflicts、handoff、writing-great-skills 源自 [mattpocock/skills](https://github.com/mattpocock/skills)（MIT），部分经过修改（触发词收窄、悬空引用修复、可移植性调整）
 - groundwork 融合了 karpathy 编码守则、ai-coding-agent-guidelines 的存活条款与 [ponytail](https://github.com/DietrichGebert/ponytail) 极简主义阶梯的精华
-- 插件清单结构参考了两个真实发布的仓库：Claude Code / Codex 的清单形状借鉴 [ponytail](https://github.com/DietrichGebert/ponytail)；`.agents` 通用清单、OpenCode 符号链接布局、GitHub Copilot 的目录扫描与 `.agent.md` 命名规则借鉴 [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills)
+- 多平台插件清单结构参考了 [ponytail](https://github.com/DietrichGebert/ponytail) 与 [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) 的真实实现
 - 工作流设计参考 Anthropic Claude Code 团队关于 loop engineering 的实践（gate、state file、maker/checker 分离、硬停止），部分理念借鉴自 [Trellis](https://github.com/mindfold-ai/Trellis)（状态注入 hook、冷启动、spec 晋升闭环）
 
 ## License
