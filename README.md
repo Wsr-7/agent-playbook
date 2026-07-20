@@ -1,6 +1,6 @@
 # agent-playbook
 
-强模型时代的个人 AI coding-agent playbook：一条从需求拷问到交付验收的完整链路，跨 Claude Code 与 Codex CLI。以 skill 为主体，未来也会收纳独立的 plugins/hooks 等 agent 增强件。
+个人 AI coding-agent playbook：一条从需求拷问到交付验收的完整链路。以 skill 为主体，跨 Claude Code、Codex CLI、OpenCode、GitHub Copilot CLI 分发。
 
 ## 设计哲学
 
@@ -22,7 +22,7 @@
 任务进来
 ├─ (自动) groundwork 生效：判断力基线垫底
 ├─ 需求模糊？        → /grill-me 逐分支拷问（要留术语表/ADR 用 /grill-with-docs）
-├─ 大任务？          → /spec-to-delivery：spec 冻结 → 计划 → 实现(小步 checkpoint commit)
+├─ 大任务？          → /delivery：spec 冻结 → 计划 → 实现(小步 checkpoint commit)
 │                      → gate 脚本 → 独立审查(≤2轮) → 交付报告
 ├─ 卡硬 bug？        → (自动) diagnosing-bugs：先造红灯命令，再谈假设
 ├─ 验收 agent 产出？ → /review-worker：gate 先跑 → 判断性审查 → 人工验证表
@@ -30,14 +30,14 @@
 └─ git 冲突？        → (自动) resolving-merge-conflicts
 ```
 
-一句话记忆：**groundwork 无处不在，grill 在动手前，spec-to-delivery 在做大事，diagnose 在卡死时，review 在收货时，handoff 在离场时。**
+一句话记忆：**groundwork 无处不在，grill 在动手前，delivery 在做大事，diagnose 在卡死时，review 在收货时，handoff 在离场时。**
 
 ## Skill 清单
 
 | Skill | 角色 |
 | --- | --- |
 | groundwork | 行为基线：假设显式化、最小手术式改动、根因修复、验证纪律、fail loud、路由表 |
-| spec-to-delivery | 复杂交付：task packet(spec/task/review)、可执行验收标准、gate、独立审查、循环化出口 |
+| delivery | 复杂交付：task packet(spec/task/review)、可执行验收标准、gate、独立审查、循环化出口 |
 | review-worker | 验收 agent 产出：确定性检查先行，双角色写入协议（嵌入式只写 review.md） |
 | handoff | 会话压缩交接（跨会话/跨 agent） |
 | bootstrap | 项目冷启动：扫描仓库 → 生成 STATE.md + lessons + 真实命令版 gate.ps1 并实跑验证 |
@@ -52,40 +52,62 @@
 实测组件清单与 token 成本（`claude plugin details agent-playbook`）：
 
 ```text
-Skills (12)  bootstrap, diagnosing-bugs, domain-modeling, grill-me, grill-with-docs,
+Skills (12)  bootstrap, delivery, diagnosing-bugs, domain-modeling, grill-me, grill-with-docs,
              grilling, groundwork, handoff, resolving-merge-conflicts, review-worker,
-             spec-to-delivery, writing-great-skills
+             writing-great-skills
 Agents (1)   reviewer
 Hooks (0)
-Always-on:   ~1,128 tok   added to every session
+Always-on:   ~1,096 tok   added to every session
 ```
 
-## 安装
+## 为什么是一个"插件"
 
-### Claude Code（推荐：官方插件机制）
+`skills/` 是唯一真身；仓库根目录另外放了几份小清单文件，每份只做一件事——告诉某个平台"我的 skills 在哪、我的 agents 在哪"：
 
-本仓库是一个标准 Claude Code 插件（`.claude-plugin/marketplace.json` + `plugin.json`），skills 和 agents 按目录约定自动发现，无需任何同步脚本。
+```text
+.claude-plugin/{marketplace.json,plugin.json}   Claude Code
+.codex-plugin/plugin.json                        Codex CLI（marketplace.json 与 Claude Code 共用）
+.github/plugin/{marketplace.json,plugin.json}     GitHub Copilot CLI
+.agents/plugins/marketplace.json                  跨工具通用清单位置
+.opencode/skills -> ../skills                     OpenCode（符号链接，非复制）
+```
+
+平台读到清单后自己克隆/缓存仓库、自己发现 `skills/` 和 `agents/` 目录下的内容、自己管理版本更新——不需要任何同步脚本，不需要手动复制文件。这是这套生态（对比 [ponytail](https://github.com/DietrichGebert/ponytail)、[addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) 等已发布插件验证过）的标准做法，比手写脚本复制文件更可靠、更好维护。
+
+## 安装与使用
+
+### Claude Code（已实测验证）
 
 ```
-/plugin marketplace add Wsr-7/agent-playbook
-/plugin install agent-playbook@agent-playbook
+claude plugin marketplace add Wsr-7/agent-playbook
+claude plugin install agent-playbook@agent-playbook
 ```
 
-私有仓库需要先给协作者开 GitHub 访问权限。本地开发/未推送时可直接从磁盘临时加载验证：
+私有仓库需要先给协作者开 GitHub 访问权限。装好后按需触发：说话涉及某个 skill 的 description 场景时自动加载，或手动输入 `/groundwork`、`/delivery` 等命令。
+
+本地开发/未推送验证过（无需发布即可试用）：
 
 ```powershell
-claude --plugin-dir "path/to/agent-playbook" plugin details agent-playbook   # 查看清单与 token 成本
-claude --plugin-dir "path/to/agent-playbook"                                  # 会话内启用一次性试用
+claude --plugin-dir "path/to/agent-playbook" plugin details agent-playbook   # 查看组件清单与 token 成本
+claude --plugin-dir "path/to/agent-playbook"                                  # 会话内一次性启用
 ```
 
-### Codex CLI
+### Codex CLI（已实测验证）
 
-`.codex-plugin/plugin.json` 声明了同一份清单，但 Codex 目前没有已验证的自动安装命令——手动同步：
-
-```powershell
-git clone https://github.com/Wsr-7/agent-playbook
-Copy-Item agent-playbook\skills\* ~\.codex\skills\ -Recurse -Force
 ```
+codex plugin marketplace add Wsr-7/agent-playbook
+codex plugin add agent-playbook@agent-playbook
+```
+
+装好后用 `$groundwork`、`$delivery` 等触发（Codex 用 `$` 前缀，Claude Code 用 `/`）。本地路径同样可用：`codex plugin marketplace add "path/to/agent-playbook"`。
+
+### OpenCode
+
+仓库内 `.opencode/skills` 是指向 `../skills` 的符号链接（架构参考 addyosmani/agent-skills 的验证实现）。克隆仓库到项目内或作为 OpenCode 能发现的路径即可；命令语法与具体触发方式请对照 OpenCode 当前文档确认——本仓库未装 OpenCode CLI 做端到端安装测试，结构正确性以静态验证（git 符号链接、真实指向 `skills/`）为准，实际加载行为请自行验证一次。
+
+### GitHub Copilot CLI
+
+`.github/plugin/{marketplace.json,plugin.json}` 镜像了 Claude Code 清单的结构（参考 ponytail 的真实实现）。本机未装 `copilot` CLI，这份清单**未经端到端测试**，仅结构上遵循已知可用的约定。
 
 ### 其他平台
 
@@ -95,11 +117,11 @@ Copy-Item agent-playbook\skills\* ~\.codex\skills\ -Recurse -Force
 
 skill 是通用约定，每个项目还需落地件（复制模板后按项目改）：
 
-- `templates/gate.ps1` → 项目的 `scripts/gate.ps1`：确定性验收门（测试/构建/git 状态），review-worker 和 spec-to-delivery 会自动找到并优先执行它
+- `templates/gate.ps1` → 项目的 `scripts/gate.ps1`：确定性验收门（测试/构建/git 状态），review-worker 和 delivery 会自动找到并优先执行它
 - `templates/STATE.md` → 项目根或本地文档目录：循环状态文件，记录进行中/已完成/待人工验证/lessons
 - `templates/hooks/inject-state.ps1` → `~/.claude/hooks/`：SessionStart hook，会话启动时强制注入项目 STATE.md（安装方式见文件头注释）——强制注入优于指望模型自觉去读。这个 hook **不**随插件自动安装：它会在每个项目的每次会话触发，属于用户级决定，需手动装
 
-Hook 是可选增强，不是依赖：平台不支持 hooks 时，groundwork 的开工规则会以 prose 方式兜底（开工先读 STATE.md 和 lessons）——概率性但通常有效；支持 hooks 的平台装上后升级为确定性注入。所有 skill 在无 hook 环境下功能完整。reviewer agent 同理：无自定义 agent 能力的平台退回 spec-to-delivery §7 的 prose 版 reviewer brief。
+Hook 是可选增强，不是依赖：平台不支持 hooks 时，groundwork 的开工规则会以 prose 方式兜底（开工先读 STATE.md 和 lessons）——概率性但通常有效；支持 hooks 的平台装上后升级为确定性注入。所有 skill 在无 hook 环境下功能完整。reviewer agent 同理：无自定义 agent 能力的平台退回 delivery §7 的 prose 版 reviewer brief。
 
 新项目接入最快路径：装好插件后在项目里说 `/bootstrap`，三件套自动生成并实跑 gate 验证。
 
@@ -107,12 +129,14 @@ Hook 是可选增强，不是依赖：平台不支持 hooks 时，groundwork 的
 
 - 项目 CLAUDE.md 超过约 200 行、或不同模块的约定开始互相冲突 → 参考 Trellis 的 spec 树：按模块拆分域规范，按需注入
 - 并行任务多到 STATE.md 手工维护吃力 → 再评估任务状态机（这是引入运行时脚本依赖的唯一正当理由）
-- 除 skill 外开始积累独立的 plugin/hook 资产 → 仓库已预留这个定位（见开头一句话），届时按需建目录，不提前占位
+- 需要独立的斜杠命令层（`/build` `/plan` `/test` 等，参考 addyosmani/agent-skills 的 commands/ 设计）→ 当前用 skill 自动触发 + `/skill-name` 已覆盖同等能力，重复了才值得加
+- Gemini CLI 或其他平台出现真实使用需求 → 再补对应清单，不预先占位
 
 ## 来源与致谢
 
 - grilling、grill-me、grill-with-docs、domain-modeling、diagnosing-bugs、resolving-merge-conflicts、handoff、writing-great-skills 源自 [mattpocock/skills](https://github.com/mattpocock/skills)（MIT），部分经过修改（触发词收窄、悬空引用修复、可移植性调整）
-- groundwork 融合了 karpathy 编码守则、ai-coding-agent-guidelines 的存活条款与 [ponytail](https://github.com/DietrichGebert/ponytail) 极简主义阶梯的精华；插件清单结构（marketplace.json/plugin.json 双清单）也参考了 ponytail 的真实实现
+- groundwork 融合了 karpathy 编码守则、ai-coding-agent-guidelines 的存活条款与 [ponytail](https://github.com/DietrichGebert/ponytail) 极简主义阶梯的精华
+- 插件清单结构（marketplace.json/plugin.json 多平台约定、OpenCode 符号链接模式）参考了 [ponytail](https://github.com/DietrichGebert/ponytail) 与 [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) 的真实实现
 - 工作流设计参考 Anthropic Claude Code 团队关于 loop engineering 的实践（gate、state file、maker/checker 分离、硬停止），部分理念借鉴自 [Trellis](https://github.com/mindfold-ai/Trellis)（状态注入 hook、冷启动、spec 晋升闭环）
 
 ## License

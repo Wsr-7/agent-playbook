@@ -1,6 +1,6 @@
 ---
 name: groundwork
-description: Core coding judgment rules — durable anti-default guardrails for writing, reviewing, or refactoring code. Surface assumptions, make minimal surgical changes, verify deterministically, fail loud. Use on any coding task; routes to specialized skills (grilling, spec-to-delivery, diagnosing-bugs, review-worker) when the task outgrows the inline rules.
+description: Core coding judgment rules — durable anti-default guardrails for writing, reviewing, or refactoring code. Surface assumptions, make minimal surgical changes, verify deterministically, fail loud. Use on any coding task; routes to specialized skills (grilling, delivery, diagnosing-bugs, review-worker) when the task outgrows the inline rules.
 ---
 
 # Groundwork
@@ -10,7 +10,7 @@ The basic rules everyone follows before starting: judgment that stays true acros
 ## 0. Route first
 
 - Requirements fuzzy, decisions unresolved → `/grilling`; to leave a glossary/ADR trail, pair it with `/domain-modeling` (the user can also type `/grill-with-docs`, which bundles both).
-- Complex, multi-module, high-risk, or multi-agent delivery → `/spec-to-delivery`.
+- Complex, multi-module, high-risk, or multi-agent delivery → `/delivery`.
 - Hard bug, flaky failure, perf regression → `/diagnosing-bugs`. Everyday bugs: section 4 below suffices.
 - Accepting another agent's claimed-done work → `/review-worker`.
 - In-progress merge/rebase conflict → `/resolving-merge-conflicts`.

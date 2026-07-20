@@ -1,0 +1,21 @@
+{
+  "name": "agent-playbook",
+  "interface": {
+    "displayName": "Agent Playbook"
+  },
+  "plugins": [
+    {
+      "name": "agent-playbook",
+      "description": "Personal AI coding-agent playbook: judgment rules, delivery workflow, gated review, and elicitation skills.",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

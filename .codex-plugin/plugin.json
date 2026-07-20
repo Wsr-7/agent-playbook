@@ -1,7 +1,7 @@
 {
   "name": "agent-playbook",
   "version": "1.0.0",
-  "description": "Personal AI coding-agent playbook: judgment rules, spec-to-delivery workflow, gated review, and elicitation skills.",
+  "description": "Personal AI coding-agent playbook: judgment rules, delivery workflow, gated review, and elicitation skills.",
   "author": {
     "name": "Wsr",
     "url": "https://github.com/Wsr-7"

@@ -1,5 +1,4 @@
 {
-  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "agent-playbook",
   "description": "Personal AI coding-agent playbook: judgment rules, delivery workflow, gated review, and elicitation skills.",
   "owner": {
@@ -9,7 +8,6 @@
   "plugins": [
     {
       "name": "agent-playbook",
-      "description": "12-skill engineering workflow: ground rules, delivery, gated review, elicitation, debugging.",
       "source": "./",
       "category": "productivity",
       "tags": ["workflow", "code-review", "tdd", "productivity"]

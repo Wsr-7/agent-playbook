@@ -1,9 +1,9 @@
 ---
-name: spec-to-delivery
-description: Docs-first spec-to-delivery workflow for complex, multi-module, or multi-agent work — durable task packet, executable acceptance checks, deterministic gate, independent review. Use when the user invokes /spec-to-delivery (Codex: $spec-to-delivery) or asks for spec-first planning, durable plans, TDD delivery, adversarial review, cross-agent handoff, or verifiable delivery.
+name: delivery
+description: Docs-first delivery workflow for complex, multi-module, or multi-agent work — durable task packet, executable acceptance checks, deterministic gate, independent review. Use when the user invokes /delivery (Codex: $delivery) or asks for spec-first planning, durable plans, TDD delivery, adversarial review, cross-agent handoff, or verifiable delivery.
 ---
 
-# Spec to Delivery
+# Delivery
 
 Use the smallest workflow that preserves durable decisions, clean handoffs, and independent acceptance. Reuse requirements, plans, and repository conventions that already exist.
 
@@ -181,10 +181,10 @@ When the same task shape recurs on a schedule or stream (CI triage, dependency b
 ## Invocation examples
 
 ```text
-/spec-to-delivery Implement this feature with durable task documents and independent review.
-/spec-to-delivery Plan only; write a cross-session task packet and do not modify implementation files.
-/spec-to-delivery Use parallel implementation agents for disjoint work and a separate adversarial reviewer agent.
-/spec-to-delivery Fix this bug: reproduce it with a failing test first, gate on the suite, then independent review.
+/delivery Implement this feature with durable task documents and independent review.
+/delivery Plan only; write a cross-session task packet and do not modify implementation files.
+/delivery Use parallel implementation agents for disjoint work and a separate adversarial reviewer agent.
+/delivery Fix this bug: reproduce it with a failing test first, gate on the suite, then independent review.
 ```
 
-(Codex uses `$spec-to-delivery` in place of `/spec-to-delivery`.)
+(Codex uses `$delivery` in place of `/delivery`.)

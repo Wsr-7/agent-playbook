@@ -1,6 +1,6 @@
 ---
 name: bootstrap
-description: Bootstrap a repo into this skill workflow — scan the project, then create STATE.md, a lessons file, and a scripts/gate.ps1 seeded with the project's real build/test commands. Use when the user says "bootstrap this project", "初始化项目工作流", "接入 skills 工作流", or when groundwork/spec-to-delivery runs in a repo that has no STATE.md or gate script.
+description: Bootstrap a repo into this skill workflow — scan the project, then create STATE.md, a lessons file, and a scripts/gate.ps1 seeded with the project's real build/test commands. Use when the user says "bootstrap this project", "初始化项目工作流", "接入 skills 工作流", or when groundwork/delivery runs in a repo that has no STATE.md or gate script.
 ---
 
 # Bootstrap
