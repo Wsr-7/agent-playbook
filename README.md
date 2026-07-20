@@ -65,14 +65,15 @@ Always-on:   ~1,096 tok   added to every session
 `skills/` 是唯一真身；仓库根目录另外放了几份小清单文件，每份只做一件事——告诉某个平台"我的 skills 在哪、我的 agents 在哪"：
 
 ```text
-.claude-plugin/{marketplace.json,plugin.json}   Claude Code
-.codex-plugin/plugin.json                        Codex CLI（marketplace.json 与 Claude Code 共用）
-.github/plugin/{marketplace.json,plugin.json}     GitHub Copilot CLI
-.agents/plugins/marketplace.json                  跨工具通用清单位置
-.opencode/skills -> ../skills                     OpenCode（符号链接，非复制）
+.claude-plugin/{marketplace.json,plugin.json}   Claude Code — 插件市场机制，克隆+缓存+自动发现
+.codex-plugin/plugin.json                        Codex CLI — 同上（marketplace.json 与 Claude Code 共用）
+.agents/plugins/marketplace.json                  跨工具通用清单位置（Codex 也会读）
+.opencode/skills -> ../skills                     OpenCode — 符号链接，配合 AGENTS.md 的 skill 工具使用
+.github/skills -> ../skills                       GitHub Copilot — 符号链接，Copilot 直接扫描该目录
+.github/agents/reviewer.agent.md -> ...            GitHub Copilot 的 agent persona（文件名必须以 .agent.md 结尾）
 ```
 
-平台读到清单后自己克隆/缓存仓库、自己发现 `skills/` 和 `agents/` 目录下的内容、自己管理版本更新——不需要任何同步脚本，不需要手动复制文件。这是这套生态（对比 [ponytail](https://github.com/DietrichGebert/ponytail)、[addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) 等已发布插件验证过）的标准做法，比手写脚本复制文件更可靠、更好维护。
+两种机制并存：Claude Code 和 Codex 有真正的插件市场（清单声明 + CLI 自动克隆缓存 + 版本管理）；OpenCode 和 Copilot **没有**插件系统，靠约定路径的目录直接扫描——所以那两个是符号链接指向同一份 `skills/`，不是另一套清单。这套模式验证自两个已发布的真实插件仓库：[ponytail](https://github.com/DietrichGebert/ponytail)（Claude Code/Codex 清单）、[addyosmani/agent-skills](https://github.com/addyosmani/agent-skills)（本仓库对每个平台的真实机制均以其 [docs/](https://github.com/addyosmani/agent-skills/tree/main/docs) 下的官方安装指南为准，而非从目录结构反推）。
 
 ## 安装与使用
 
@@ -99,15 +100,38 @@ codex plugin marketplace add Wsr-7/agent-playbook
 codex plugin add agent-playbook@agent-playbook
 ```
 
-装好后用 `$groundwork`、`$delivery` 等触发（Codex 用 `$` 前缀，Claude Code 用 `/`）。本地路径同样可用：`codex plugin marketplace add "path/to/agent-playbook"`。
+装好后用 `@skill-name` 触发（如 `@groundwork`），或直接描述任务让 Codex 自己选。**限制**：Codex 对 agent persona 没有原生支持——`agents/reviewer.md` 会随插件装进缓存，但不会被当作可调用的子 agent；需要审查时直接触发 `review-worker` skill 本身即可，它不依赖 reviewer agent 才能工作。本地路径同样可用：`codex plugin marketplace add "path/to/agent-playbook"`。
 
 ### OpenCode
 
-仓库内 `.opencode/skills` 是指向 `../skills` 的符号链接（架构参考 addyosmani/agent-skills 的验证实现）。克隆仓库到项目内或作为 OpenCode 能发现的路径即可；命令语法与具体触发方式请对照 OpenCode 当前文档确认——本仓库未装 OpenCode CLI 做端到端安装测试，结构正确性以静态验证（git 符号链接、真实指向 `skills/`）为准，实际加载行为请自行验证一次。
+OpenCode **没有原生插件系统或自动 skill 路由**——这不是我们的限制，是 OpenCode 本身的限制（官方文档原话）。真正让 skill 被使用的是两样东西：`skills/` 目录本身（仓库已通过 `.opencode/skills -> ../skills` 符号链接提供），加上一份指示 agent "遇事先查 skill、调用内置 `skill` 工具"的 `AGENTS.md`。后者需要你在自己项目的 `AGENTS.md` 里补一段（没有就新建）：
 
-### GitHub Copilot CLI
+```markdown
+## Skill usage (agent-playbook)
 
-`.github/plugin/{marketplace.json,plugin.json}` 镜像了 Claude Code 清单的结构（参考 ponytail 的真实实现）。本机未装 `copilot` CLI，这份清单**未经端到端测试**，仅结构上遵循已知可用的约定。
+Skills live in `skills/<name>/SKILL.md` (symlinked from this plugin). Before
+acting on a non-trivial request, check whether a skill applies and invoke it
+via the `skill` tool — don't skip straight to implementation.
+
+- Any coding task → `groundwork` (check this first)
+- Requirements unclear → `grilling` (or `grill-with-docs` for a glossary trail)
+- Complex/multi-agent delivery → `delivery`
+- Hard or recurring bug → `diagnosing-bugs`
+- Accepting another agent's work → `review-worker`
+- Merge/rebase conflict → `resolving-merge-conflicts`
+```
+
+没有这段 `AGENTS.md` 指令，符号链接只是让文件存在，不代表会被用到——skill 是否触发依赖模型是否遵循这段指令，不是平台强制的。本机未装 OpenCode CLI 做端到端验证，机制描述来自 OpenCode 官方设置文档，未经本仓库实测确认。
+
+### GitHub Copilot
+
+Copilot 不是插件市场机制，而是直接扫描约定路径的目录——`.github/skills`、`.claude/skills`、`.agents/skills` 三选一（[官方文档](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/create-skills)）。本仓库提供 `.github/skills -> ../skills` 符号链接。
+
+Agent persona 需要单独处理：Copilot 要求文件名以 **`.agent.md`** 结尾，普通 `.md` 会被静默忽略——本仓库提供 `.github/agents/reviewer.agent.md`（指向 `agents/reviewer.md` 的符号链接）。Copilot Chat 里用 `@reviewer` 调用。
+
+想要项目级常驻指令（不依赖 skill 触发），Copilot 支持 `.github/copilot-instructions.md`——这个仓库目前没提供，属于"你自己项目要不要采纳"的选择，不强加。
+
+本机未装 `copilot` CLI，以上机制未经端到端测试，结构与命名规则均来自官方文档与 addyosmani/agent-skills 的验证实现。
 
 ### 其他平台
 
@@ -136,7 +160,7 @@ Hook 是可选增强，不是依赖：平台不支持 hooks 时，groundwork 的
 
 - grilling、grill-me、grill-with-docs、domain-modeling、diagnosing-bugs、resolving-merge-conflicts、handoff、writing-great-skills 源自 [mattpocock/skills](https://github.com/mattpocock/skills)（MIT），部分经过修改（触发词收窄、悬空引用修复、可移植性调整）
 - groundwork 融合了 karpathy 编码守则、ai-coding-agent-guidelines 的存活条款与 [ponytail](https://github.com/DietrichGebert/ponytail) 极简主义阶梯的精华
-- 插件清单结构参考了两个真实发布的插件仓库：Claude Code / Codex / `.agents` 通用清单的写法、OpenCode 符号链接模式，来自 [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills)；GitHub Copilot CLI 的 `.github/plugin/` 结构来自 [ponytail](https://github.com/DietrichGebert/ponytail)——addyosmani/agent-skills 本身不含 Copilot 支持，这条清单未经其验证，也未经本地 `copilot` CLI 实测
+- Claude Code / Codex 的插件清单结构参考 [ponytail](https://github.com/DietrichGebert/ponytail) 的真实实现；`.agents` 通用清单写法、OpenCode 与 GitHub Copilot 的接入机制（均无原生插件系统，前者靠 `AGENTS.md` + `skill` 工具、后者靠约定路径目录扫描 + `.agent.md` 命名规则）来自 [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) 的 [docs/](https://github.com/addyosmani/agent-skills/tree/main/docs) 官方设置指南——本仓库均以其文档为准，OpenCode/Copilot 机制未经本地 CLI 端到端测试
 - 工作流设计参考 Anthropic Claude Code 团队关于 loop engineering 的实践（gate、state file、maker/checker 分离、硬停止），部分理念借鉴自 [Trellis](https://github.com/mindfold-ai/Trellis)（状态注入 hook、冷启动、spec 晋升闭环）
 
 ## License
