@@ -92,6 +92,21 @@ Copilot 扫描 `.github/skills`、`.claude/skills`、`.agents/skills` 三者之�
 
 没有专属清单也能用：克隆仓库，把需要的 `skills/<name>/SKILL.md` 内容贴进 agent 的系统提示词、规则文件（如 `CLAUDE.md`/`.cursorrules`）或直接粘进对话——每份 SKILL.md 都是自包含的纯 Markdown，不依赖仓库其他文件。
 
+### 让 groundwork 默认垫底（可选）
+
+groundwork 及其余 skill 的 description 随插件分发，模型会在匹配的编码任务上自动加载它——装了插件即生效，无需任何额外配置。全流程地图里"(自动) groundwork 生效"依赖的就是这个机制。
+
+若想要"每次编码任务必以 groundwork 垫底"的更强保证（而非依赖模型自主判断），把这段加进你的 `CLAUDE.md` 或 `AGENTS.md`：
+
+```markdown
+When a task involves writing, reviewing, or refactoring code, load the
+`groundwork` skill before starting — it carries the baseline judgment
+rules (minimal change, root-cause fixes, verification discipline) the
+other skills build on.
+```
+
+本仓库刻意不用 SessionStart hook 做全局强制注入：groundwork 只在编码时需要，而 SessionStart 在会话开始时无法区分任务类型，强制注入会让非编码会话也付出 token 成本。是否要这层强化，交给使用者按自己的偏好决定。
+
 ## 项目侧配套（templates/）
 
 skill 是通用约定，每个项目还需落地件（复制模板后按项目改）：
