@@ -197,5 +197,3 @@ When the same task shape recurs on a schedule or stream (CI triage, dependency b
 /delivery Use parallel implementation agents for disjoint work and a separate adversarial reviewer agent.
 /delivery Fix this bug: reproduce it with a failing test first, gate on the suite, then independent review.
 ```
-
-(On Codex, plugin-installed skills use the same `/delivery` slash command; `@name` only reaches skills placed directly under `~/.codex/skills/`.)
