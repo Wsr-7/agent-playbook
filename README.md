@@ -82,15 +82,15 @@ codex plugin add agent-playbook@agent-playbook
 
 ### OpenCode
 
-`.opencode/skills`（符号链接指向 `skills/`）由 OpenCode 内置的 `skill` 工具原生发现，无需任何配置。克隆仓库使该目录能被项目访问即可。
+把 `skills/` 下需要的 skill 目录复制到项目的 `.opencode/skills/`，或在其中创建指向本仓库对应 skill 目录的符号链接——每个 skill 一个文件夹（连同它的 `SKILL.md` 与附属文件）即可。
 
 ### GitHub Copilot
 
-Copilot 扫描 `.github/skills`、`.claude/skills`、`.agents/skills` 三者之一，本仓库提供 `.github/skills`。agent persona 文件名必须以 `.agent.md` 结尾——普通 `.md` 会被静默忽略。`.github/agents/reviewer.agent.md` 遵循此约定，在 Copilot Chat 里用 `@reviewer` 调用。
+Copilot 扫描 `.github/skills`、`.claude/skills`、`.agents/skills` 三者之一。把 `skills/` 下需要的 skill 目录复制到其中任一位置即可，没有现成目录时推荐 `.github/skills`。agent persona 需单独处理：文件名必须以 `.agent.md` 结尾（普通 `.md` 会被静默忽略），本仓库提供 `.github/agents/reviewer.agent.md`，在 Copilot Chat 里用 `@reviewer` 调用。
 
 ### 其他 agent
 
-没有专属清单也能用：克隆仓库，把需要的 `skills/<name>/SKILL.md` 内容贴进 agent 的系统提示词、规则文件（如 `CLAUDE.md`/`.cursorrules`）或直接粘进对话——每份 SKILL.md 都是自包含的纯 Markdown，不依赖仓库其他文件。
+查该 agent 文档确认它扫描的 skills 目录位置（不少工具也认通用位置 `.agents/skills/`），把 `skills/` 下需要的 skill 目录复制或软链过去即可——每个 skill 一个自包含文件夹，不依赖仓库其他文件。
 
 ### 让 groundwork 默认垫底（可选）
 
