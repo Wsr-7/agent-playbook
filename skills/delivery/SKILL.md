@@ -1,6 +1,6 @@
 ---
 name: delivery
-description: Docs-first delivery workflow for complex, multi-module, or multi-agent work — durable task packet, executable acceptance checks, deterministic gate, independent review. Use when the user invokes /delivery (Codex: $delivery) or asks for spec-first planning, durable plans, TDD delivery, adversarial review, cross-agent handoff, or verifiable delivery.
+description: Docs-first delivery workflow for complex, multi-module, or multi-agent work — durable task packet, executable acceptance checks, deterministic gate, independent review. Use when the user invokes /delivery or asks for spec-first planning, durable plans, TDD delivery, adversarial review, cross-agent handoff, or verifiable delivery.
 ---
 
 # Delivery
