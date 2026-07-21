@@ -198,4 +198,4 @@ When the same task shape recurs on a schedule or stream (CI triage, dependency b
 /delivery Fix this bug: reproduce it with a failing test first, gate on the suite, then independent review.
 ```
 
-(Codex uses `$delivery` in place of `/delivery`.)
+(On Codex, plugin-installed skills use the same `/delivery` slash command; `@name` only reaches skills placed directly under `~/.codex/skills/`.)
