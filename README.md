@@ -78,7 +78,7 @@ codex plugin marketplace add Wsr-7/agent-playbook
 codex plugin add agent-playbook@agent-playbook
 ```
 
-用 `@skill-name` 触发（如 `@groundwork`），或直接描述任务让 Codex 自行选择。Codex 不支持 agent persona——`agents/reviewer.md` 会随插件进入缓存，但无法作为子 agent 调用；需要审查时直接触发 `review-worker` skill。
+用 `@skill-name` 触发（如 `@groundwork`），或直接描述任务让 Codex 自行选择。审查交给 `review-worker`：Codex 的独立审查靠只读审查 skill 实现（其内置的 `review-agent` 即是此形态），review-worker 正是这个角色。仓库根的 `agents/reviewer.md` 是 Claude Code 专用 persona——用工具白名单从权限层锁死只读，这是 Claude Code 独有的加强；Codex 不加载它，也不需要，review-worker 已覆盖审查职责。
 
 ### OpenCode
 
