@@ -1,6 +1,6 @@
 # Deterministic review gate — TEMPLATE.
 # Copy to <your-repo>/scripts/gate.ps1 and replace the CHECK section with your
-# project's real commands. review-worker and ship run this before any
+# project's real commands. review-worker and delivery run this before any
 # judgment review; exit 0 = PASS, exit 1 = FAIL.
 $repo = Split-Path $PSScriptRoot -Parent
 Set-Location $repo
