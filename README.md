@@ -15,6 +15,7 @@
 - **Gate 优先于意见**：验收先跑确定性检查（exit code），模型判断只覆盖脚本查不了的部分。"A reviewer without a gate is a second optimist."
 - **主心骨 + 挂靠引擎**：groundwork 永远在场，专业引擎按需触发，引用不内联。
 - **有意的少量重复**：核心行为规则在引擎间刻意重复几行，使每个 skill 文件可独立分发——拿走任何一个都自洽，不依赖本仓库其他文件、任何插件或个人配置。**维护时请勿"好心去重"。**
+- **skill 正文保持平台无关**：触发前缀、平台差异（`/name` vs `$name`、hook、agent persona 等）放 README 或平台专属文件（如 `agents/openai.yaml`），不进 `SKILL.md` 正文——正文是可跨平台分发的工作流指令，塞平台细节就是污染。
 
 ## 全流程地图
 
