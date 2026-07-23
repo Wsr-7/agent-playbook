@@ -99,7 +99,7 @@ Copy the skill directories you want from `skills/` into your project's `.opencod
 
 ### GitHub Copilot
 
-Copilot scans one of `.github/skills`, `.claude/skills`, `.agents/skills`. Copy the skill directories you want from `skills/` into any one of them; `.github/skills` is recommended when there's no existing directory. The agent persona needs separate handling: the filename must end in `.agent.md` (a plain `.md` is silently ignored). This repo ships `.github/agents/reviewer.agent.md` (an independent Copilot-adapted copy of the reviewer, no symlink); call it in Copilot Chat with `@reviewer`. Its `tools` allowlist (`read`, `search`, `execute`) grants no `edit` tool, so file edits are blocked at the tool layer; `execute` runs the gate (mirroring the Claude agent's Bash) with shell mutation forbidden by the prompt — the same read-only posture as the Claude Code form.
+Copilot scans one of `.github/skills`, `.claude/skills`, `.agents/skills`. Copy the skill directories you want from `skills/` into any one of them; `.github/skills` is recommended when there's no existing directory. The agent persona needs separate handling: the filename must end in `.agent.md` (a plain `.md` is silently ignored). This repo ships `.github/agents/reviewer.agent.md` (an independent Copilot-adapted copy of the reviewer, no symlink); call it in Copilot Chat with `@reviewer`. It works project-scoped in `.github/agents/`, or copy it to `~/.copilot/agents/` for personal use across all workspaces (a home-dir agent of the same name overrides the repo one). Its `tools` allowlist (`read`, `search`, `execute`) grants no `edit` tool, so file edits are blocked at the tool layer; `execute` runs the gate (mirroring the Claude agent's Bash) with shell mutation forbidden by the prompt — the same read-only posture as the Claude Code form.
 
 ### Other agents
 
@@ -256,7 +256,7 @@ codex plugin add agent-playbook@agent-playbook
 
 ### GitHub Copilot
 
-Copilot 扫描 `.github/skills`、`.claude/skills`、`.agents/skills` 三者之一。把 `skills/` 下需要的 skill 目录复制到其中任一位置即可，没有现成目录时推荐 `.github/skills`。agent persona 需单独处理：文件名必须以 `.agent.md` 结尾（普通 `.md` 会被静默忽略），本仓库提供 `.github/agents/reviewer.agent.md`（为 Copilot 适配的独立副本，非符号链接），在 Copilot Chat 里用 `@reviewer` 调用。它的 `tools` 白名单（`read`、`search`、`execute`）不含 `edit` 工具，文件编辑被工具层挡住；`execute` 用于跑 gate（对应 Claude agent 的 Bash），shell 改动由提示词禁止——与 Claude Code 形态同样的只读姿态。
+Copilot 扫描 `.github/skills`、`.claude/skills`、`.agents/skills` 三者之一。把 `skills/` 下需要的 skill 目录复制到其中任一位置即可，没有现成目录时推荐 `.github/skills`。agent persona 需单独处理：文件名必须以 `.agent.md` 结尾（普通 `.md` 会被静默忽略），本仓库提供 `.github/agents/reviewer.agent.md`（为 Copilot 适配的独立副本，非符号链接），在 Copilot Chat 里用 `@reviewer` 调用。它可就地作为项目级放 `.github/agents/`，或复制到 `~/.copilot/agents/` 供个人跨所有工作区使用（同名时 home 目录的覆盖仓库里的）。它的 `tools` 白名单（`read`、`search`、`execute`）不含 `edit` 工具，文件编辑被工具层挡住；`execute` 用于跑 gate（对应 Claude agent 的 Bash），shell 改动由提示词禁止——与 Claude Code 形态同样的只读姿态。
 
 ### 其他 agent
 
