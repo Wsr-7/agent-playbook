@@ -60,7 +60,7 @@ One-line memory: **groundwork everywhere, grill before you touch, delivery for t
 | resolving-merge-conflicts | Resolve hunk by hunk per both sides' intent, never --abort |
 | writing-great-skills | The meta-theory of writing/editing skills (leading words, no-op test, dual-payload model) |
 
-`agents/reviewer.md`: a read-only acceptance agent whose tool whitelist carries no edit capability — maker/checker separation enforced by permission, not by exhortation. It ships in three native forms sharing one instruction body: Claude Code (`agents/reviewer.md`, tool whitelist), Codex (`.codex/agents/reviewer.toml`, `sandbox_mode = "read-only"`), and GitHub Copilot (`.github/agents/reviewer.agent.md`, a symlink to the same body — read-only by instruction, since Copilot documents no tool-whitelist enforcement).
+`agents/reviewer.md`: a read-only acceptance agent whose tool whitelist carries no edit capability — maker/checker separation enforced by permission, not by exhortation. It ships in three native forms sharing one instruction body: Claude Code (`agents/reviewer.md`, tool whitelist), Codex (`.codex/agents/reviewer.toml`, `sandbox_mode = "read-only"`), and GitHub Copilot (`.github/agents/reviewer.agent.md`, an independent Copilot-adapted copy — read-only by instruction, since Copilot documents no tool-whitelist enforcement).
 
 Measured component list and token cost (`claude plugin details agent-playbook`):
 
@@ -99,7 +99,7 @@ Copy the skill directories you want from `skills/` into your project's `.opencod
 
 ### GitHub Copilot
 
-Copilot scans one of `.github/skills`, `.claude/skills`, `.agents/skills`. Copy the skill directories you want from `skills/` into any one of them; `.github/skills` is recommended when there's no existing directory. The agent persona needs separate handling: the filename must end in `.agent.md` (a plain `.md` is silently ignored). This repo ships `.github/agents/reviewer.agent.md` (a symlink to `agents/reviewer.md` — one shared instruction body); call it in Copilot Chat with `@reviewer`. Note: Copilot documents no read-only tool-whitelist mechanism, so on Copilot the reviewer's read-only discipline is by instruction, not enforced by permission — unlike the Claude Code and Codex forms.
+Copilot scans one of `.github/skills`, `.claude/skills`, `.agents/skills`. Copy the skill directories you want from `skills/` into any one of them; `.github/skills` is recommended when there's no existing directory. The agent persona needs separate handling: the filename must end in `.agent.md` (a plain `.md` is silently ignored). This repo ships `.github/agents/reviewer.agent.md` (an independent Copilot-adapted copy of the reviewer, no symlink); call it in Copilot Chat with `@reviewer`. Note: Copilot documents no read-only tool-whitelist mechanism, so on Copilot the reviewer's read-only discipline is by instruction, not enforced by permission — unlike the Claude Code and Codex forms.
 
 ### Other agents
 
@@ -215,7 +215,7 @@ MIT, see [LICENSE](LICENSE).
 | resolving-merge-conflicts | 按双方意图逐 hunk 解决，never --abort |
 | writing-great-skills | 写/改 skill 的元理论（leading words、no-op 检验、双负载模型） |
 
-`agents/reviewer.md`：只读验收 agent，工具白名单不含编辑能力，maker/checker 分离由权限而非嘱咐保证。它以三种原生形态分发、共享同一份指令正文：Claude Code（`agents/reviewer.md`，工具白名单）、Codex（`.codex/agents/reviewer.toml`，`sandbox_mode = "read-only"`）、GitHub Copilot（`.github/agents/reviewer.agent.md`，指向同一正文的符号链接——只读靠指令约束，因为 Copilot 未提供工具白名单强制机制）。
+`agents/reviewer.md`：只读验收 agent，工具白名单不含编辑能力，maker/checker 分离由权限而非嘱咐保证。它以三种原生形态分发、共享同一份指令正文：Claude Code（`agents/reviewer.md`，工具白名单）、Codex（`.codex/agents/reviewer.toml`，`sandbox_mode = "read-only"`）、GitHub Copilot（`.github/agents/reviewer.agent.md`，为 Copilot 适配的独立副本——只读靠指令约束，因为 Copilot 未提供工具白名单强制机制）。
 
 实测组件清单与 token 成本（`claude plugin details agent-playbook`）：
 
@@ -256,7 +256,7 @@ codex plugin add agent-playbook@agent-playbook
 
 ### GitHub Copilot
 
-Copilot 扫描 `.github/skills`、`.claude/skills`、`.agents/skills` 三者之一。把 `skills/` 下需要的 skill 目录复制到其中任一位置即可，没有现成目录时推荐 `.github/skills`。agent persona 需单独处理：文件名必须以 `.agent.md` 结尾（普通 `.md` 会被静默忽略），本仓库提供 `.github/agents/reviewer.agent.md`（指向 `agents/reviewer.md` 的符号链接——同一份指令正文），在 Copilot Chat 里用 `@reviewer` 调用。注意：Copilot 未提供只读工具白名单机制，所以在 Copilot 上 reviewer 的只读靠指令约束、非权限强制——与 Claude Code、Codex 两种形态不同。
+Copilot 扫描 `.github/skills`、`.claude/skills`、`.agents/skills` 三者之一。把 `skills/` 下需要的 skill 目录复制到其中任一位置即可，没有现成目录时推荐 `.github/skills`。agent persona 需单独处理：文件名必须以 `.agent.md` 结尾（普通 `.md` 会被静默忽略），本仓库提供 `.github/agents/reviewer.agent.md`（为 Copilot 适配的独立副本，非符号链接），在 Copilot Chat 里用 `@reviewer` 调用。注意：Copilot 未提供只读工具白名单机制，所以在 Copilot 上 reviewer 的只读靠指令约束、非权限强制——与 Claude Code、Codex 两种形态不同。
 
 ### 其他 agent
 
