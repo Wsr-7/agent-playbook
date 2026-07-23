@@ -1,24 +1,24 @@
-# Loop State · <项目名>
+# Loop State · <project>
 
-> worker / reviewer 每轮开工前先读本文件，收工时回填；人类可随时手改。
-> 模板说明：复制到项目根目录（团队共享则入库）或本地文档目录（仅本机则 gitignore），删掉本行。
+> worker / reviewer reads this file before each round and writes back when done; humans may edit it anytime.
+> Template note: copy to the project root (commit it if the team shares docs) or a local docs dir (gitignore it if machine-only), then delete this line.
 
-## 当前阶段
+## Current stage
 
-- <一句话：项目现在处于什么阶段，活动计划文档在哪>
+- <one line: where the project is now, and where the active plan doc lives>
 
 ## In progress
 
-- <进行中的任务，含当前进展到哪一步；无则写"无">
+- <in-flight task, including the exact step it is at; write "none" if empty>
 
-## 待人工验证 / 决策
+## Awaiting human verification / decision
 
-- <只列机器验证不了、需要人拍板的点；无则写"无">
+- <only points a machine cannot verify and a human must decide; write "none" if empty>
 
 ## Gate
 
-- `scripts/gate.ps1`：<写明它检查什么，例如 npm test + git 状态>。审查/验收前必跑。
+- `scripts/gate.*`: <what it checks, e.g. npm test + git state>. Run before any review/acceptance.
 
 ## Lessons
 
-- <一条一行，追加即可；也可指向独立的 lessons 文件>
+- <one per line, append-only; may also point to a standalone lessons file>
