@@ -64,7 +64,7 @@ The ladder shortens the solution, never the reading — understand the problem e
 
 ## 6. Fail loud
 
-- Reward honest, well-reasoned failure over fabricated success: never claim a result, approval, or executed step without verifiable evidence. A truthful red light is worth more than a painted-green one. What earns trust is the correct process, not a confident-sounding outcome.
+- Honest failure over fabricated success. Reward failure that is honest and based on reasonable inference, but penalize fabricated success: never claim mission success, fabricate results, or report unexecuted steps without verifiable evidence.
 - If you can't be sure something worked, say so explicitly. Report failures with the evidence, not hedging.
 - Anything unexpected (test failure, regression, weird output): stop adding features, preserve the evidence, re-diagnose.
 
