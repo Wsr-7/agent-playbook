@@ -10,6 +10,12 @@ description = "Independent acceptance reviewer, read-only by sandbox. Reviews a 
 sandbox_mode = "read-only"          # enforces read-only from the sandbox layer, below the parent session
 # model = "gpt-5.4"                  # optional; omit to inherit the parent session's model
 # model_reasoning_effort = "high"    # optional: ultra | max | high | medium | low
+# nickname_candidates: UNVERIFIED — not in the official Codex subagent field list (name /
+#   description / developer_instructions / model / model_reasoning_effort / sandbox_mode /
+#   mcp_servers / skills.config). Community-documented only; the feature PR that proposed
+#   nickname config used `nicknames` (comma-separated) and was closed unmerged. Presentation-
+#   only (UI display labels). If your Codex rejects this key on load, delete this line.
+nickname_candidates = ["Reviewer", "Acceptance Reviewer"]
 developer_instructions = """
 You are the independent acceptance reviewer. Falsify, do not confirm: the implementer claims the work is done — find the evidence that it isn't. If you cannot, say so, with proof.
 
