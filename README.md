@@ -60,7 +60,7 @@ One-line memory: **groundwork everywhere, grill before you touch, delivery for t
 | resolving-merge-conflicts | Resolve hunk by hunk per both sides' intent, never --abort |
 | writing-great-skills | The meta-theory of writing/editing skills (leading words, no-op test, dual-payload model) |
 
-`agents/reviewer.md`: a read-only acceptance agent whose tool whitelist carries no edit capability — maker/checker separation enforced by permission, not by exhortation.
+`agents/reviewer.md`: a read-only acceptance agent whose tool whitelist carries no edit capability — maker/checker separation enforced by permission, not by exhortation. It ships in four native forms, each an independent file: Claude Code (`agents/reviewer.md`, tool whitelist), Codex (`.codex/agents/reviewer.toml`, `sandbox_mode = "read-only"`), OpenCode (`.opencode/agents/reviewer.md`, `permission: edit: deny`), and GitHub Copilot (`.github/agents/reviewer.agent.md`, `tools: [read, search, execute]`, no `edit` tool). Each blocks file edits at the tool/permission layer while keeping shell access to run the gate.
 
 Measured component list and token cost (`claude plugin details agent-playbook`):
 
@@ -91,15 +91,15 @@ codex plugin marketplace add Wsr-7/agent-playbook
 codex plugin add agent-playbook@agent-playbook
 ```
 
-Trigger with `/skill-name` or `$skill-name` (e.g. `/reviewit`, `$reviewit`), or just describe the task and let Codex pick. (`@skill-name` only works for standalone skills placed directly at the top level of `~/.codex/skills/`; this plugin is installed via `plugin add` and is not on that search path, so `@` won't find it.) Reviews go to `reviewit`: Codex's independent review is realized through a read-only review skill (its built-in `review-agent` is exactly this shape), and reviewit fills that role. The repo-root `agents/reviewer.md` is a Claude-Code-only persona — it locks read-only from the permission layer via a tool whitelist, a Claude-Code-specific reinforcement; Codex does not load it and does not need it, since reviewit already covers the review duty.
+Trigger with `/skill-name` or `$skill-name` (e.g. `/reviewit`, `$reviewit`), or just describe the task and let Codex pick. (`@skill-name` only works for standalone skills placed directly at the top level of `~/.codex/skills/`; this plugin is installed via `plugin add` and is not on that search path, so `@` won't find it.) Reviews go to `reviewit`, the platform-agnostic review skill (Codex's built-in `review-agent` is exactly this read-only-review shape, and reviewit fills that role). For permission-enforced independence, Codex also supports custom subagents: this repo ships `.codex/agents/reviewer.toml` with `sandbox_mode = "read-only"`, the Codex counterpart to Claude Code's tool-whitelist lockdown. Copy it to `~/.codex/agents/` for global use or keep it project-scoped, and invoke it by naming it in a delegation ("have reviewer check this branch") — Codex has no `@agent` syntax.
 
 ### OpenCode
 
-Copy the skill directories you want from `skills/` into your project's `.opencode/skills/`, or create symlinks there pointing at the corresponding skill directories in this repo — one folder per skill (with its `SKILL.md` and attached files) is all it needs.
+Copy the skill directories you want from `skills/` into your project's `.opencode/skills/`, or create symlinks there pointing at the corresponding skill directories in this repo — one folder per skill (with its `SKILL.md` and attached files) is all it needs. For the read-only reviewer, this repo also ships `.opencode/agents/reviewer.md` (`permission: edit: deny`); copy it to `~/.config/opencode/agents/` for global use or keep it project-scoped, and invoke it with `@reviewer`.
 
 ### GitHub Copilot
 
-Copilot scans one of `.github/skills`, `.claude/skills`, `.agents/skills`. Copy the skill directories you want from `skills/` into any one of them; `.github/skills` is recommended when there's no existing directory. The agent persona needs separate handling: the filename must end in `.agent.md` (a plain `.md` is silently ignored). This repo ships `.github/agents/reviewer.agent.md`; call it in Copilot Chat with `@reviewer`.
+Copilot scans one of `.github/skills`, `.claude/skills`, `.agents/skills`. Copy the skill directories you want from `skills/` into any one of them; `.github/skills` is recommended when there's no existing directory. The agent persona needs separate handling: the filename must end in `.agent.md` (a plain `.md` is silently ignored). This repo ships `.github/agents/reviewer.agent.md` (an independent Copilot-adapted copy of the reviewer, no symlink); call it in Copilot Chat with `@reviewer`. It works project-scoped in `.github/agents/`, or copy it to `~/.copilot/agents/` for personal use across all workspaces (a home-dir agent of the same name overrides the repo one). Its `tools` allowlist (`read`, `search`, `execute`) grants no `edit` tool, so file edits are blocked at the tool layer; `execute` runs the gate (mirroring the Claude agent's Bash) with shell mutation forbidden by the prompt — the same read-only posture as the Claude Code form.
 
 ### Other agents
 
@@ -215,7 +215,7 @@ MIT, see [LICENSE](LICENSE).
 | resolving-merge-conflicts | 按双方意图逐 hunk 解决，never --abort |
 | writing-great-skills | 写/改 skill 的元理论（leading words、no-op 检验、双负载模型） |
 
-`agents/reviewer.md`：只读验收 agent，工具白名单不含编辑能力，maker/checker 分离由权限而非嘱咐保证。
+`agents/reviewer.md`：只读验收 agent，工具白名单不含编辑能力，maker/checker 分离由权限而非嘱咐保证。它以四种原生形态分发、各为独立文件：Claude Code（`agents/reviewer.md`，工具白名单）、Codex（`.codex/agents/reviewer.toml`，`sandbox_mode = "read-only"`）、OpenCode（`.opencode/agents/reviewer.md`，`permission: edit: deny`）、GitHub Copilot（`.github/agents/reviewer.agent.md`，`tools: [read, search, execute]`，无 `edit` 工具）。每种都在工具/权限层挡住文件编辑，同时保留 shell 以便跑 gate。
 
 实测组件清单与 token 成本（`claude plugin details agent-playbook`）：
 
@@ -248,15 +248,15 @@ codex plugin marketplace add Wsr-7/agent-playbook
 codex plugin add agent-playbook@agent-playbook
 ```
 
-用 `/skill-name` 或 `$skill-name` 触发（如 `/reviewit`、`$reviewit`），或直接描述任务让 Codex 自行选择。（`@skill-name` 只对直接放进 `~/.codex/skills/` 顶层的独立 skill 有效；本插件通过 `plugin add` 安装、不在该搜索路径，用 `@` 找不到。）审查交给 `reviewit`：Codex 的独立审查靠只读审查 skill 实现（其内置的 `review-agent` 即是此形态），reviewit 正是这个角色。仓库根的 `agents/reviewer.md` 是 Claude Code 专用 persona——用工具白名单从权限层锁死只读，这是 Claude Code 独有的加强；Codex 不加载它，也不需要，reviewit 已覆盖审查职责。
+用 `/skill-name` 或 `$skill-name` 触发（如 `/reviewit`、`$reviewit`），或直接描述任务让 Codex 自行选择。（`@skill-name` 只对直接放进 `~/.codex/skills/` 顶层的独立 skill 有效；本插件通过 `plugin add` 安装、不在该搜索路径，用 `@` 找不到。）审查交给 `reviewit`（平台无关的审查 skill；Codex 内置的 `review-agent` 即是此只读审查形态，reviewit 正是这个角色）。若要权限层强制的独立性，Codex 也支持自定义 subagent：本仓库提供 `.codex/agents/reviewer.toml`，`sandbox_mode = "read-only"`，即 Claude Code 工具白名单锁死的 Codex 对应物。复制到 `~/.codex/agents/` 供全局使用，或就地作为项目级；调用时在委派里点名（"让 reviewer 检查这个分支"）——Codex 没有 `@agent` 语法。
 
 ### OpenCode
 
-把 `skills/` 下需要的 skill 目录复制到项目的 `.opencode/skills/`，或在其中创建指向本仓库对应 skill 目录的符号链接——每个 skill 一个文件夹（连同它的 `SKILL.md` 与附属文件）即可。
+把 `skills/` 下需要的 skill 目录复制到项目的 `.opencode/skills/`，或在其中创建指向本仓库对应 skill 目录的符号链接——每个 skill 一个文件夹（连同它的 `SKILL.md` 与附属文件）即可。只读 reviewer 另有 `.opencode/agents/reviewer.md`（`permission: edit: deny`）：复制到 `~/.config/opencode/agents/` 供全局使用，或就地作为项目级，用 `@reviewer` 调用。
 
 ### GitHub Copilot
 
-Copilot 扫描 `.github/skills`、`.claude/skills`、`.agents/skills` 三者之一。把 `skills/` 下需要的 skill 目录复制到其中任一位置即可，没有现成目录时推荐 `.github/skills`。agent persona 需单独处理：文件名必须以 `.agent.md` 结尾（普通 `.md` 会被静默忽略），本仓库提供 `.github/agents/reviewer.agent.md`，在 Copilot Chat 里用 `@reviewer` 调用。
+Copilot 扫描 `.github/skills`、`.claude/skills`、`.agents/skills` 三者之一。把 `skills/` 下需要的 skill 目录复制到其中任一位置即可，没有现成目录时推荐 `.github/skills`。agent persona 需单独处理：文件名必须以 `.agent.md` 结尾（普通 `.md` 会被静默忽略），本仓库提供 `.github/agents/reviewer.agent.md`（为 Copilot 适配的独立副本，非符号链接），在 Copilot Chat 里用 `@reviewer` 调用。它可就地作为项目级放 `.github/agents/`，或复制到 `~/.copilot/agents/` 供个人跨所有工作区使用（同名时 home 目录的覆盖仓库里的）。它的 `tools` 白名单（`read`、`search`、`execute`）不含 `edit` 工具，文件编辑被工具层挡住；`execute` 用于跑 gate（对应 Claude agent 的 Bash），shell 改动由提示词禁止——与 Claude Code 形态同样的只读姿态。
 
 ### 其他 agent
 
