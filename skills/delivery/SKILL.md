@@ -84,30 +84,16 @@ Mark independent work as parallel and dependency-bound work as sequential. Assig
 
 Record the reviewer assignment before implementation starts. The reviewer must not own implementation work.
 
-## 5. Prefer native features on primary platforms
+## 5. Prefer native features, keep the core portable
 
-Detect the host and use its current native capabilities. Keep the core documents and role separation portable.
+Detect the host and use its current native capabilities; keep the task documents and role separation portable across platforms.
 
-### Codex
-
-- Use Plan mode for read-only exploration and planning when available or requested.
-- Create or use a Goal when the user explicitly requests persistent or autonomous execution or has already started Goal mode. Put the outcome and acceptance criteria in the goal; keep detailed state in the task packet.
-- Use subagents for bounded independent work. Use a separate read-only subagent for final review.
+- Use the platform's read-only planning or exploration mode for analysis before edits.
+- Use its persistent or autonomous execution mode when the user asks for durable or unattended runs; put the outcome and acceptance criteria there, and keep detailed state in the task packet.
+- Use its subagents for bounded independent work, and run workstreams in parallel or in isolated workspaces only when their ownership is disjoint.
 - Keep the main thread responsible for orchestration, integration, task documents, and final reporting.
-- If the `reviewit` skill is installed, use it as the reviewer entry point: it runs the project's deterministic gate (`scripts/gate.*`) first, and as an embedded reviewer writes findings to `review.md` only.
-
-### Claude Code
-
-- Use Plan mode for analysis before edits.
-- Use subagents for focused side work; use parallel agents, agent teams, or isolated worktrees (`isolation: worktree`) only when workstreams have disjoint ownership.
-- Assign a fresh read-only review subagent after integration. Do not reuse an implementation subagent as reviewer.
-- If the `/reviewit` skill is installed, use it as the reviewer entry point (gate first; findings to `review.md` only).
-
-### Other agents
-
-- Use equivalent native plan, persistent-task, subagent, and read-only reviewer features when present.
-- If native planning or persistence is absent, use the task packet as the control plane.
-- If independent subagents are unavailable, do not self-approve. Write a ready-to-run reviewer handoff in `review.md`, mark independent acceptance pending, and report the task as implemented but not independently accepted.
+- Assign a fresh reviewer that did not implement the work. Where the platform can lock the reviewer to read-only tools or restricted permissions, use that enforcement — independence guaranteed by permission beats independence asked for in prose. If the `reviewit` skill (or an equivalent read-only reviewer) is available, use it as the reviewer entry point: it runs the deterministic gate (`scripts/gate.*`) first and, as an embedded reviewer, writes findings to `review.md` only.
+- If native planning or persistence is absent, use the task packet as the control plane. If independent subagents are unavailable, do not self-approve: write a ready-to-run reviewer handoff in `review.md`, mark independent acceptance pending, and report the task as implemented but not independently accepted.
 
 ## 6. Execute with bounded agents and sparse checkpoints
 
@@ -129,7 +115,7 @@ Implementation agents must run their own checks, but those checks are evidence f
 
 Before spawning the reviewer, run the deterministic gate: the project's gate script when one exists (`scripts/gate.*` or equivalent), otherwise the smallest objective set — build, lint, tests, and the executable acceptance checks from the Spec. Any gate failure returns the work to the implementer; do not spend reviewer effort on work the gate rejects. If the gate fails twice in a row on the same slice, stop and report to the user instead of looping. Never skip, weaken, or disable a failing check to make the gate pass — fix it or escalate. A reviewer without a gate is a second optimist: opinions cannot fail work, exit codes can.
 
-After the gate passes, assign a separate reviewer subagent that did not implement the work. Give it fresh context and read-only permissions where the platform supports them. On Claude Code, prefer the dedicated `reviewer` agent definition distributed with these skills — it carries no edit tools, so checker independence is enforced by tool policy rather than prose.
+After the gate passes, assign a separate reviewer subagent that did not implement the work. Give it fresh context and, where the platform supports it, read-only permissions — a reviewer locked to read-only tools has its independence enforced by permission rather than prose (§5).
 
 Provide the reviewer with the task packet, final diff or artifact, and commands needed to inspect the result. Do not provide the implementer's desired verdict or hide known uncertainties.
 
@@ -187,7 +173,7 @@ Task packet:
 
 ## 9. Promote recurring work to a loop
 
-When the same task shape recurs on a schedule or stream (CI triage, dependency bumps, report-to-PR), this workflow is the loop body. Get one run reliable manually before automating. The Handoff section is the loop's persistent state; the gate is its objective stop condition. Then wrap it with the platform's automation: Codex Automations, or Claude Code `/loop`, `/goal`, and `/schedule`. Give every loop a hard stop — an iteration cap, time box, or token budget — and match the interval to how often the watched thing actually changes.
+When the same task shape recurs on a schedule or stream (CI triage, dependency bumps, report-to-PR), this workflow is the loop body. Get one run reliable manually before automating. The Handoff section is the loop's persistent state; the gate is its objective stop condition. Then wrap it with the platform's native automation or scheduling features. Give every loop a hard stop — an iteration cap, time box, or token budget — and match the interval to how often the watched thing actually changes.
 
 ## Invocation examples
 
