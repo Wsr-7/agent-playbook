@@ -60,7 +60,7 @@ One-line memory: **groundwork everywhere, grill before you touch, delivery for t
 | resolving-merge-conflicts | Resolve hunk by hunk per both sides' intent, never --abort |
 | writing-great-skills | The meta-theory of writing/editing skills (leading words, no-op test, dual-payload model) |
 
-`agents/reviewer.md`: a read-only acceptance agent whose tool whitelist carries no edit capability — maker/checker separation enforced by permission, not by exhortation. It ships in three native forms sharing one instruction body: Claude Code (`agents/reviewer.md`, tool whitelist), Codex (`.codex/agents/reviewer.toml`, `sandbox_mode = "read-only"`), and GitHub Copilot (`.github/agents/reviewer.agent.md`, an independent Copilot-adapted copy — `tools: [read, search, execute]` grants no `edit` tool, so file edits are blocked at the tool layer, matching the Claude form).
+`agents/reviewer.md`: a read-only acceptance agent whose tool whitelist carries no edit capability — maker/checker separation enforced by permission, not by exhortation. It ships in four native forms, each an independent file: Claude Code (`agents/reviewer.md`, tool whitelist), Codex (`.codex/agents/reviewer.toml`, `sandbox_mode = "read-only"`), OpenCode (`.opencode/agents/reviewer.md`, `permission: edit: deny`), and GitHub Copilot (`.github/agents/reviewer.agent.md`, `tools: [read, search, execute]`, no `edit` tool). Each blocks file edits at the tool/permission layer while keeping shell access to run the gate.
 
 Measured component list and token cost (`claude plugin details agent-playbook`):
 
@@ -95,7 +95,7 @@ Trigger with `/skill-name` or `$skill-name` (e.g. `/reviewit`, `$reviewit`), or 
 
 ### OpenCode
 
-Copy the skill directories you want from `skills/` into your project's `.opencode/skills/`, or create symlinks there pointing at the corresponding skill directories in this repo — one folder per skill (with its `SKILL.md` and attached files) is all it needs.
+Copy the skill directories you want from `skills/` into your project's `.opencode/skills/`, or create symlinks there pointing at the corresponding skill directories in this repo — one folder per skill (with its `SKILL.md` and attached files) is all it needs. For the read-only reviewer, this repo also ships `.opencode/agents/reviewer.md` (`permission: edit: deny`); copy it to `~/.config/opencode/agents/` for global use or keep it project-scoped, and invoke it with `@reviewer`.
 
 ### GitHub Copilot
 
@@ -215,7 +215,7 @@ MIT, see [LICENSE](LICENSE).
 | resolving-merge-conflicts | 按双方意图逐 hunk 解决，never --abort |
 | writing-great-skills | 写/改 skill 的元理论（leading words、no-op 检验、双负载模型） |
 
-`agents/reviewer.md`：只读验收 agent，工具白名单不含编辑能力，maker/checker 分离由权限而非嘱咐保证。它以三种原生形态分发、共享同一份指令正文：Claude Code（`agents/reviewer.md`，工具白名单）、Codex（`.codex/agents/reviewer.toml`，`sandbox_mode = "read-only"`）、GitHub Copilot（`.github/agents/reviewer.agent.md`，为 Copilot 适配的独立副本——`tools: [read, search, execute]` 不含 `edit` 工具，文件编辑被工具层挡住，与 Claude 形态一致）。
+`agents/reviewer.md`：只读验收 agent，工具白名单不含编辑能力，maker/checker 分离由权限而非嘱咐保证。它以四种原生形态分发、各为独立文件：Claude Code（`agents/reviewer.md`，工具白名单）、Codex（`.codex/agents/reviewer.toml`，`sandbox_mode = "read-only"`）、OpenCode（`.opencode/agents/reviewer.md`，`permission: edit: deny`）、GitHub Copilot（`.github/agents/reviewer.agent.md`，`tools: [read, search, execute]`，无 `edit` 工具）。每种都在工具/权限层挡住文件编辑，同时保留 shell 以便跑 gate。
 
 实测组件清单与 token 成本（`claude plugin details agent-playbook`）：
 
@@ -252,7 +252,7 @@ codex plugin add agent-playbook@agent-playbook
 
 ### OpenCode
 
-把 `skills/` 下需要的 skill 目录复制到项目的 `.opencode/skills/`，或在其中创建指向本仓库对应 skill 目录的符号链接——每个 skill 一个文件夹（连同它的 `SKILL.md` 与附属文件）即可。
+把 `skills/` 下需要的 skill 目录复制到项目的 `.opencode/skills/`，或在其中创建指向本仓库对应 skill 目录的符号链接——每个 skill 一个文件夹（连同它的 `SKILL.md` 与附属文件）即可。只读 reviewer 另有 `.opencode/agents/reviewer.md`（`permission: edit: deny`）：复制到 `~/.config/opencode/agents/` 供全局使用，或就地作为项目级，用 `@reviewer` 调用。
 
 ### GitHub Copilot
 
