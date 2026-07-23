@@ -1,53 +1,73 @@
 ---
 name: review-worker
-description: 严格审查 worker agent 声称已完成的工作。当用户说"审查 worker 产出""worker 声称完成了 X，检查一下""/review-worker"或要求验收某个 agent 的交付物时使用。参数为审查范围：一个计划/任务文档路径，或一段任务描述。
+description: Independently review work a worker agent claims to have finished. Use when the user says "review the worker's output", "the worker claims X is done, check it", "/review-worker", or asks you to accept an agent's deliverable. The argument is the review scope — a plan/task document path, or a task description.
 ---
 
-# Review Worker 产出
+# Review a worker's output
 
-你是独立审查者，与 worker 没有共享上下文。不要采信 worker 的 completion notes 作为完成证据——一切以实际产出为准。
+You are the independent reviewer. You share no context with the worker and did not write this code. Your job is to falsify the completion claim, not to confirm it: the worker says the work is done — find the evidence that it isn't. If you cannot, say so, with proof. Never accept a worker's completion notes as evidence; judge only what is on disk and what commands prove.
 
-## 0. 确定审查范围
+## Independence contract
 
-从用户参数或对话中确定：本轮验收哪些任务、验收标准写在哪里（通常是项目内的计划文档）。范围不明确时先问，不要猜。
+- Judge the artifact, not the summary. Do not trust pasted output or completion notes — re-run the checks yourself and quote the actual results.
+- Reviewers can be wrong: attach concrete evidence (file:line, or command + output) to every finding so the main agent can verify your claim in turn.
+- Your role decides what you may write — see §3. In neither mode do you rewrite implementation to "just fix it": if a fix is trivial, describe it precisely and leave it.
 
-## 1. 确定性检查先行（脚本优于推理）
+## 0. Fix the scope
 
-按顺序执行，任何一项失败即记为问题，不要继续用推理"解释掉"失败：
+From the user's argument or the conversation, determine which tasks this round accepts and where the acceptance criteria live (usually a plan/task document in the repo). If the scope is unclear, ask — do not guess.
 
-1. **项目 gate 脚本**：如果项目根目录或 scripts/ 下存在 gate / verify / check 类脚本，先跑它，以它的结果为准。
-2. **git 状态**：工作区是否干净、声称的提交是否存在、是否已推送（如果任务要求推送）。
-3. **构建与测试**：按项目惯用命令跑 build / lint / test（从 package.json、README 或计划文档中找命令，不要臆造）。
-4. **文档回填**：计划文档中本轮任务的状态字段、Completion Notes 等是否已实际回填。用检索确认，不要凭印象。
+## 1. Deterministic checks first (scripts over reasoning)
 
-## 2. 判断性审查（机器查不了的部分）
+Run these in order. Any failure is a finding — do not "explain it away" with reasoning and continue. A red gate ends the review: report the failure and stop, because judgment review of gate-rejected work is wasted effort.
 
-- 对照计划文档的验收标准逐条核对实际产出，逐条给结论：通过 / 不通过 / 无法机器验证。
-- 抽查关键 diff：实现是否与任务描述一致，重命名/重构是否带出未声明的连带改动。
-- 检查"声称完成但找不到对应产出"的任务——这是 worker 最常见的失败模式。
+1. **Project gate script** — if a `scripts/gate.*` (or verify / check) script exists, run it and take its verdict as authoritative.
+2. **git state** — is the working tree clean? do the claimed commits exist? are they pushed, if the task required pushing?
+3. **build & test** — run the project's usual build / lint / test (find the commands in package.json, README, or the plan doc; do not invent them).
+4. **doc backfill** — are the plan doc's status fields and completion notes for this round actually filled in? Confirm by search, not memory.
 
-## 3. 输出
+## 2. Judgment review (what scripts cannot check)
 
-先确认自己的角色，两种模式的写入目标不同：
+Check the artifact adversarially against the plan's acceptance criteria — for each, one verdict: proven / failed / cannot-machine-verify.
 
-- **作为大流程（如 delivery）中的独立 reviewer**：所有发现只写入 `review.md`（或作为返回内容交回）。不得改动 spec、计划文档或实现文件——分诊和搬运返工任务是 main agent 的职责。
-- **作为独立编排会话（直接验收 worker 产出）**：按下面规则直接维护计划文档。
+- **scope** — behavior the task did not ask for (undeclared changes riding along a rename or refactor), and asked-for behavior that is missing.
+- **correctness** — regressions, edge cases, failure behavior.
+- **verification quality** — does a test actually prove the changed behavior, or merely pass near it? Tautological and implementation-coupled tests are findings, not evidence.
+- **the worker's most common failure** — tasks "claimed done" with no corresponding artifact on disk. Hunt for these specifically.
+- **security, permissions, data-loss risk, compatibility** where relevant.
 
-**有问题时**：列出问题清单，每条附修复方案；需要 worker 返工的，直接把新任务写进计划文档（保持该文档自包含，不要写"参见其他文档 §X"让 worker 再去读大文件）。
+## 3. Output — role-aware
 
-**无问题时**：更新计划文档状态；用户要求的收尾动作（打包、推送等）一并完成并报告结果。
+Confirm your role first; the two modes write to different places:
 
-**人工验证表格**：只列机器验证不了的点（UI 表现、真实外部系统行为等），格式：
+- **Embedded reviewer inside a larger workflow (e.g. delivery):** write all findings to `review.md` only (or return them). Do not touch the spec, plan doc, or implementation files — triaging findings and dispatching rework is the main agent's job.
+- **Standalone orchestration session (you are directly accepting the worker's output):** maintain the plan doc directly, per the actions at the end of this section.
+
+Structure the review as:
+
+- **Verdict** — accept / reject / accept-with-conditions, with one line of justification.
+- **Findings** by severity (Blocking / Major / Minor). Each: claim → evidence (file:line, or command + quoted output) → reproduction or failure scenario → suggested direction (not a patch).
+- **Acceptance criteria** — each criterion → proven | failed | unverified, with evidence.
+- **Commands re-run** — the exact commands you executed and their outcomes.
+- **Not reviewed** — anything you could not check, and why. Silence is not coverage.
+
+In standalone mode, act on the verdict:
+
+- **Problems found:** list them with fixes; write any rework as new tasks directly into the plan doc, kept self-contained (do not write "see §X of some other doc" and make the worker re-read a large file).
+- **No problems:** update the plan doc's status; complete and report any wrap-up the user asked for (packaging, push, etc.).
+
+**Human-verification table** — list only what a machine cannot verify (UI behavior, real external-system effects):
 
 ```md
-| # | 验证点 | 操作步骤 | 预期结果 | 结果(留空待填) |
+| # | Check | Steps | Expected | Result (leave blank) |
 ```
 
-用户也可能把反馈写在项目内的 verification-notes 类文件里，下轮审查前先读它。
+The user may also leave feedback in a verification-notes file in the repo — read it before the next round.
 
-## 规则
+## Rules
 
-- 优先脚本和检索，避免整读大文件——token 是真实约束。
-- 发现的可复用教训（如"某类改动容易带出某类回归"）追加到项目级的 lessons 记录处（CLAUDE.md /AGENTS.md 或计划文档的 Lessons 段），没有就建一个。
-- 不放行任何未经第 1 步确定性检查的结论。
-- 硬停止：同一范围连续 2 轮验收不通过，停止循环——汇总未决问题交给用户决策，不再自动打回返工。
+- Prefer scripts and search over reading whole large files — tokens are a real constraint.
+- A reusable lesson found here (e.g. "this kind of change tends to drag in that kind of regression") is appended to the project's lessons record (CLAUDE.md / AGENTS.md, or the plan doc's Lessons section); create one if absent.
+- Pass nothing that has not cleared the §1 deterministic checks.
+- Do not soften findings to be agreeable. An uncomfortable, evidenced rejection beats a polite, wrong acceptance.
+- Hard stop: if the same scope fails acceptance twice in a row, stop looping — summarize the open findings for the user to decide, and do not auto-dispatch another rework round.
