@@ -1,6 +1,6 @@
 ---
 name: bootstrap
-description: Bootstrap a repo into this skill workflow — scan the project, then create STATE.md, a lessons file, and a scripts/gate.ps1 seeded with the project's real build/test commands. Use when the user says "bootstrap this project", "初始化项目工作流", "接入 skills 工作流", or when groundwork/delivery runs in a repo that has no STATE.md or gate script.
+description: Bootstrap a repo into this skill workflow — scan the project, then create STATE.md, a lessons file, and a gate script (scripts/gate.sh or gate.ps1) seeded with the project's real build/test commands. Use when the user says "bootstrap this project", "wire up the skill workflow", "onboard this repo to the workflow", or when groundwork/delivery runs in a repo that has no STATE.md or gate script.
 ---
 
 # Bootstrap
@@ -18,25 +18,25 @@ If none exists (check root, `.local/`, `docs/`), create one seeded with what the
 ```md
 # Loop State · <project>
 
-## 当前阶段
+## Current stage
 - <one line: where the project is; active plan doc if any>
 
 ## In progress
-- 无
+- none
 
-## 待人工验证 / 决策
-- 无
+## Awaiting human verification / decision
+- none
 
 ## Gate
-- `scripts/gate.ps1`: <what it checks>. Run before any review/acceptance.
+- `scripts/gate.*`: <what it checks>. Run before any review/acceptance.
 
 ## Lessons
-- 见 <lessons file path>
+- see <lessons file path>
 ```
 
 ## 3. Gate
 
-If no `scripts/gate.*` exists, create `scripts/gate.ps1`: section 1 runs the project's real check commands from step 1 (FAIL on non-zero exit, print the tail of failing output); section 2 checks git state (dirty tree → FAIL with "commit your checkpoints"; unpushed / no upstream → WARN); end with `GATE: PASS` / `GATE: FAIL` and exit 0 / 1. Every verdict comes from an exit code — no model judgment inside the gate.
+If no `scripts/gate.*` exists, create one whose language matches the project's shell environment — `scripts/gate.sh` for Unix/macOS/bash projects, `scripts/gate.ps1` for Windows/PowerShell projects (detect from the host OS, the project's CI shell, or an existing script convention); the `templates/` dir ships both. Section 1 runs the project's real check commands from step 1 (FAIL on non-zero exit, print the tail of failing output); section 2 checks git state (dirty tree → FAIL with "commit your checkpoints"; unpushed / no upstream → WARN); end with `GATE: PASS` / `GATE: FAIL` and exit 0 / 1. Every verdict comes from an exit code — no model judgment inside the gate.
 
 If several check commands are plausible, ask one question with a recommended default. Then **run the gate once and report the verdict** — an unverified gate is not a gate.
 
