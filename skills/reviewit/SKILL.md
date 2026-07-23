@@ -1,6 +1,6 @@
 ---
-name: review-worker
-description: Independently review work a worker agent claims to have finished. Use when the user says "review the worker's output", "the worker claims X is done, check it", "/review-worker", or asks you to accept an agent's deliverable. The argument is the review scope — a plan/task document path, or a task description.
+name: reviewit
+description: Independently review work a worker agent claims to have finished. Use when the user says "review the worker's output", "the worker claims X is done, check it", "/reviewit", or asks you to accept an agent's deliverable. The argument is the review scope — a plan/task document path, or a task description.
 ---
 
 # Review a worker's output

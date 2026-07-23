@@ -94,14 +94,14 @@ Detect the host and use its current native capabilities. Keep the core documents
 - Create or use a Goal when the user explicitly requests persistent or autonomous execution or has already started Goal mode. Put the outcome and acceptance criteria in the goal; keep detailed state in the task packet.
 - Use subagents for bounded independent work. Use a separate read-only subagent for final review.
 - Keep the main thread responsible for orchestration, integration, task documents, and final reporting.
-- If the `review-worker` skill is installed, use it as the reviewer entry point: it runs the project's deterministic gate (`scripts/gate.*`) first, and as an embedded reviewer writes findings to `review.md` only.
+- If the `reviewit` skill is installed, use it as the reviewer entry point: it runs the project's deterministic gate (`scripts/gate.*`) first, and as an embedded reviewer writes findings to `review.md` only.
 
 ### Claude Code
 
 - Use Plan mode for analysis before edits.
 - Use subagents for focused side work; use parallel agents, agent teams, or isolated worktrees (`isolation: worktree`) only when workstreams have disjoint ownership.
 - Assign a fresh read-only review subagent after integration. Do not reuse an implementation subagent as reviewer.
-- If the `/review-worker` skill is installed, use it as the reviewer entry point (gate first; findings to `review.md` only).
+- If the `/reviewit` skill is installed, use it as the reviewer entry point (gate first; findings to `review.md` only).
 
 ### Other agents
 

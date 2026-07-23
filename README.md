@@ -2,7 +2,7 @@
 
 **English** · [简体中文](#zh)
 
-A personal playbook of skills for AI coding agents, distilled from how I actually work — one continuous path from interrogating a requirement to accepting a delivery. The starting point was to drop the constraints of heavyweight frameworks like superpowers and keep only the parts that still change a strong model's behavior, then absorb the good ideas from other skills and plugins for my own use. Some pieces are my own (delivery, review-worker, the gate system); others are mature skills adopted and adapted as needed (the grilling series, from mattpocock).
+A personal playbook of skills for AI coding agents, distilled from how I actually work — one continuous path from interrogating a requirement to accepting a delivery. The starting point was to drop the constraints of heavyweight frameworks like superpowers and keep only the parts that still change a strong model's behavior, then absorb the good ideas from other skills and plugins for my own use. Some pieces are my own (delivery, reviewit, the gate system); others are mature skills adopted and adapted as needed (the grilling series, from mattpocock).
 
 ## Table of Contents
 
@@ -38,7 +38,7 @@ task comes in
 ├─ big task?                       → /delivery: freeze spec → plan → implement (small checkpoint commits)
 │                                    → gate script → independent review (≤2 rounds) → delivery report
 ├─ stuck on a hard bug?            → (auto) diagnosing-bugs: build the red-light command first, hypotheses second
-├─ accepting an agent's output?    → /review-worker: gate first → judgment review → human-verification table
+├─ accepting an agent's output?    → /reviewit: gate first → judgment review → human-verification table
 ├─ session ending / switching?     → /handoff
 └─ git conflict?                   → (auto) resolving-merge-conflicts
 ```
@@ -51,7 +51,7 @@ One-line memory: **groundwork everywhere, grill before you touch, delivery for t
 | --- | --- |
 | groundwork | Behavior baseline: make assumptions explicit, minimal surgical changes, root-cause fixes, verification discipline, fail loud, routing table |
 | delivery | Complex delivery: task packet (spec/task/review), executable acceptance checks, gate, independent review, loop-ready exit |
-| review-worker | Accepting an agent's output: deterministic checks first, role-aware write protocol (embedded → review.md only) |
+| reviewit | Accepting an agent's output: deterministic checks first, role-aware write protocol (embedded → review.md only) |
 | handoff | Session-compaction handover (cross-session / cross-agent) |
 | bootstrap | Repo cold-start: scan the repo → generate STATE.md + lessons + a real-command gate (gate.sh / gate.ps1 by environment) and run it to verify |
 | grilling / grill-me / grill-with-docs | The human-side interrogation engine + two thin entry points |
@@ -66,7 +66,7 @@ Measured component list and token cost (`claude plugin details agent-playbook`):
 
 ```text
 Skills (12)  bootstrap, delivery, diagnosing-bugs, domain-modeling, grill-me, grill-with-docs,
-             grilling, groundwork, handoff, resolving-merge-conflicts, review-worker,
+             grilling, groundwork, handoff, resolving-merge-conflicts, reviewit,
              writing-great-skills
 Agents (1)   reviewer
 Hooks (0)
@@ -91,7 +91,7 @@ codex plugin marketplace add Wsr-7/agent-playbook
 codex plugin add agent-playbook@agent-playbook
 ```
 
-Trigger with `/skill-name` or `$skill-name` (e.g. `/review-worker`, `$review-worker`), or just describe the task and let Codex pick. (`@skill-name` only works for standalone skills placed directly at the top level of `~/.codex/skills/`; this plugin is installed via `plugin add` and is not on that search path, so `@` won't find it.) Reviews go to `review-worker`: Codex's independent review is realized through a read-only review skill (its built-in `review-agent` is exactly this shape), and review-worker fills that role. The repo-root `agents/reviewer.md` is a Claude-Code-only persona — it locks read-only from the permission layer via a tool whitelist, a Claude-Code-specific reinforcement; Codex does not load it and does not need it, since review-worker already covers the review duty.
+Trigger with `/skill-name` or `$skill-name` (e.g. `/reviewit`, `$reviewit`), or just describe the task and let Codex pick. (`@skill-name` only works for standalone skills placed directly at the top level of `~/.codex/skills/`; this plugin is installed via `plugin add` and is not on that search path, so `@` won't find it.) Reviews go to `reviewit`: Codex's independent review is realized through a read-only review skill (its built-in `review-agent` is exactly this shape), and reviewit fills that role. The repo-root `agents/reviewer.md` is a Claude-Code-only persona — it locks read-only from the permission layer via a tool whitelist, a Claude-Code-specific reinforcement; Codex does not load it and does not need it, since reviewit already covers the review duty.
 
 ### OpenCode
 
@@ -124,7 +124,7 @@ This repo deliberately avoids a SessionStart hook for global forced injection: g
 
 Skills are general conventions; each project still needs landing pieces (copy the template, then adjust to the project):
 
-- `templates/gate.sh` (Unix/macOS) / `templates/gate.ps1` (Windows) → the project's `scripts/gate.*`: a deterministic acceptance gate (tests / build / git state) that review-worker and delivery find and run first. Use the one matching your project's shell environment.
+- `templates/gate.sh` (Unix/macOS) / `templates/gate.ps1` (Windows) → the project's `scripts/gate.*`: a deterministic acceptance gate (tests / build / git state) that reviewit and delivery find and run first. Use the one matching your project's shell environment.
 - `templates/STATE.md` → project root or local docs dir: the loop state file recording in-progress / done / awaiting-human-verification / lessons.
 - `templates/hooks/inject-state.ps1` → `~/.claude/hooks/`: a SessionStart hook that force-injects the project STATE.md at session start (install instructions in the file header) — forced injection beats hoping the model reads it. This hook is **not** installed automatically with the plugin: it fires on every session of every project, which is a user-level decision, so install it by hand.
 
@@ -151,7 +151,7 @@ MIT, see [LICENSE](LICENSE).
 
 [English](#agent-playbook) · **简体中文**
 
-一套根据个人工作习惯和经验沉淀的 AI coding-agent playbook：一条从需求拷问到交付验收的完整链路。出发点是去掉 superpowers 这类重型框架的约束，只保留在强模型时代仍改变行为的部分，再吸收不同优秀 skill / plugin 的思想为己所用——既有自己的沉淀（如 delivery、review-worker、gate 体系），也有直接照搬并按需改造的成熟 skill（如源自 mattpocock 的 grilling 系列）。
+一套根据个人工作习惯和经验沉淀的 AI coding-agent playbook：一条从需求拷问到交付验收的完整链路。出发点是去掉 superpowers 这类重型框架的约束，只保留在强模型时代仍改变行为的部分，再吸收不同优秀 skill / plugin 的思想为己所用——既有自己的沉淀（如 delivery、reviewit、gate 体系），也有直接照搬并按需改造的成熟 skill（如源自 mattpocock 的 grilling 系列）。
 
 ## 目录
 
@@ -191,7 +191,7 @@ MIT, see [LICENSE](LICENSE).
 ├─ 大任务？          → /delivery：spec 冻结 → 计划 → 实现(小步 checkpoint commit)
 │                      → gate 脚本 → 独立审查(≤2轮) → 交付报告
 ├─ 卡硬 bug？        → (自动) diagnosing-bugs：先造红灯命令，再谈假设
-├─ 验收 agent 产出？ → /review-worker：gate 先跑 → 判断性审查 → 人工验证表
+├─ 验收 agent 产出？ → /reviewit：gate 先跑 → 判断性审查 → 人工验证表
 ├─ 会话要断/换端？   → /handoff
 └─ git 冲突？        → (自动) resolving-merge-conflicts
 ```
@@ -206,7 +206,7 @@ MIT, see [LICENSE](LICENSE).
 | --- | --- |
 | groundwork | 行为基线：假设显式化、最小手术式改动、根因修复、验证纪律、fail loud、路由表 |
 | delivery | 复杂交付：task packet(spec/task/review)、可执行验收标准、gate、独立审查、循环化出口 |
-| review-worker | 验收 agent 产出：确定性检查先行，双角色写入协议（嵌入式只写 review.md） |
+| reviewit | 验收 agent 产出：确定性检查先行，双角色写入协议（嵌入式只写 review.md） |
 | handoff | 会话压缩交接（跨会话/跨 agent） |
 | bootstrap | 项目冷启动：扫描仓库 → 生成 STATE.md + lessons + 真实命令版 gate 脚本（gate.sh / gate.ps1 按环境选）并实跑验证 |
 | grilling / grill-me / grill-with-docs | 人侧拷问引擎 + 两个薄入口 |
@@ -221,7 +221,7 @@ MIT, see [LICENSE](LICENSE).
 
 ```text
 Skills (12)  bootstrap, delivery, diagnosing-bugs, domain-modeling, grill-me, grill-with-docs,
-             grilling, groundwork, handoff, resolving-merge-conflicts, review-worker,
+             grilling, groundwork, handoff, resolving-merge-conflicts, reviewit,
              writing-great-skills
 Agents (1)   reviewer
 Hooks (0)
@@ -248,7 +248,7 @@ codex plugin marketplace add Wsr-7/agent-playbook
 codex plugin add agent-playbook@agent-playbook
 ```
 
-用 `/skill-name` 或 `$skill-name` 触发（如 `/review-worker`、`$review-worker`），或直接描述任务让 Codex 自行选择。（`@skill-name` 只对直接放进 `~/.codex/skills/` 顶层的独立 skill 有效；本插件通过 `plugin add` 安装、不在该搜索路径，用 `@` 找不到。）审查交给 `review-worker`：Codex 的独立审查靠只读审查 skill 实现（其内置的 `review-agent` 即是此形态），review-worker 正是这个角色。仓库根的 `agents/reviewer.md` 是 Claude Code 专用 persona——用工具白名单从权限层锁死只读，这是 Claude Code 独有的加强；Codex 不加载它，也不需要，review-worker 已覆盖审查职责。
+用 `/skill-name` 或 `$skill-name` 触发（如 `/reviewit`、`$reviewit`），或直接描述任务让 Codex 自行选择。（`@skill-name` 只对直接放进 `~/.codex/skills/` 顶层的独立 skill 有效；本插件通过 `plugin add` 安装、不在该搜索路径，用 `@` 找不到。）审查交给 `reviewit`：Codex 的独立审查靠只读审查 skill 实现（其内置的 `review-agent` 即是此形态），reviewit 正是这个角色。仓库根的 `agents/reviewer.md` 是 Claude Code 专用 persona——用工具白名单从权限层锁死只读，这是 Claude Code 独有的加强；Codex 不加载它，也不需要，reviewit 已覆盖审查职责。
 
 ### OpenCode
 
@@ -283,7 +283,7 @@ other skills build on.
 
 skill 是通用约定，每个项目还需落地件（复制模板后按项目改）：
 
-- `templates/gate.sh`（Unix/macOS）/ `templates/gate.ps1`（Windows）→ 项目的 `scripts/gate.*`：确定性验收门（测试/构建/git 状态），review-worker 和 delivery 会自动找到并优先执行它；按项目 shell 环境选用对应版本
+- `templates/gate.sh`（Unix/macOS）/ `templates/gate.ps1`（Windows）→ 项目的 `scripts/gate.*`：确定性验收门（测试/构建/git 状态），reviewit 和 delivery 会自动找到并优先执行它；按项目 shell 环境选用对应版本
 - `templates/STATE.md` → 项目根或本地文档目录：循环状态文件，记录进行中/已完成/待人工验证/lessons
 - `templates/hooks/inject-state.ps1` → `~/.claude/hooks/`：SessionStart hook，会话启动时强制注入项目 STATE.md（安装方式见文件头注释）——强制注入优于指望模型自觉去读。这个 hook **不**随插件自动安装：它会在每个项目的每次会话触发，属于用户级决定，需手动装
 
