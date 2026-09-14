@@ -59,18 +59,21 @@ One-line memory: **groundwork everywhere, grill before you touch, delivery for t
 | diagnosing-bugs | Hard bugs: red-light loop first, no hypothesis without a reproduction command |
 | resolving-merge-conflicts | Resolve hunk by hunk per both sides' intent, never --abort |
 | writing-great-skills | The meta-theory of writing/editing skills (leading words, no-op test, dual-payload model) |
+| agents-map | Survey an unfamiliar repo for evidence, then map it: a readable report, or a thin AGENTS.md — no invented commands, no one-sample conventions |
+| writing / writing-fragments / writing-shape / writing-beats | Writing router + one explore path (fragments) and two exploit paths (shape / beats) |
 
 `agents/reviewer.md`: a read-only acceptance agent whose tool whitelist carries no edit capability — maker/checker separation enforced by permission, not by exhortation. It ships in four native forms, each an independent file: Claude Code (`agents/reviewer.md`, tool whitelist), Codex (`.codex/agents/reviewer.toml`, `sandbox_mode = "read-only"`), OpenCode (`.opencode/agents/reviewer.md`, `permission: edit: deny`), and GitHub Copilot (`.github/agents/reviewer.agent.md`, `tools: [read, search, execute]`, no `edit` tool). Each blocks file edits at the tool/permission layer while keeping shell access to run the gate.
 
 Measured component list and token cost (`claude plugin details agent-playbook`):
 
 ```text
-Skills (12)  bootstrap, delivery, diagnosing-bugs, domain-modeling, grill-me, grill-with-docs,
-             grilling, groundwork, handoff, resolving-merge-conflicts, reviewit,
-             writing-great-skills
+Skills (17)  agents-map, bootstrap, delivery, diagnosing-bugs, domain-modeling, grill-me,
+             grill-with-docs, grilling, groundwork, handoff, resolving-merge-conflicts,
+             reviewit, writing, writing-beats, writing-fragments, writing-great-skills,
+             writing-shape
 Agents (1)   reviewer
 Hooks (0)
-Always-on:   ~1,096 tok   added to every session
+Always-on:   pending re-measure (was ~1,085 tok at 12 skills)
 ```
 
 ## Quick Start
@@ -134,7 +137,8 @@ Fastest path to onboard a new project: after installing the plugin, say `/bootst
 
 ## Credits
 
-- grilling, grill-me, grill-with-docs, domain-modeling, diagnosing-bugs, resolving-merge-conflicts, handoff, writing-great-skills come from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT), some with modifications (narrowed trigger words, dangling-reference fixes, portability adjustments).
+- grilling, grill-me, grill-with-docs, domain-modeling, diagnosing-bugs, resolving-merge-conflicts, handoff, writing-great-skills, writing-fragments, writing-shape, writing-beats come from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT), some with modifications (narrowed trigger words, dangling-reference fixes, portability adjustments). The writing trio also carries handoff clarifications so the `writing` router can drive them; `writing` itself is not upstream.
+- agents-map is an independent implementation; its evidence-first design draws on the AGENTS.md open format, [ECC](https://github.com/affaan-m/ECC) `codebase-onboarding` and the [quokkify](https://github.com/quokkify/skills) adaptation of it (both MIT). Principles only — no substantial text copied.
 - groundwork fuses the essence of karpathy's coding rules, the survival clauses of ai-coding-agent-guidelines, and the minimalist ladder of [ponytail](https://github.com/DietrichGebert/ponytail).
 - The multi-platform plugin manifest structure references the real implementations of [ponytail](https://github.com/DietrichGebert/ponytail) and [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills).
 - The workflow design draws on the Anthropic Claude Code team's practice around loop engineering (gate, state file, maker/checker separation, hard stops), with some ideas borrowed from [Trellis](https://github.com/mindfold-ai/Trellis) (state-injection hook, cold start, spec-promotion loop).
@@ -214,18 +218,21 @@ MIT, see [LICENSE](LICENSE).
 | diagnosing-bugs | 硬 bug：红灯循环优先，无复现命令不许提假设 |
 | resolving-merge-conflicts | 按双方意图逐 hunk 解决，never --abort |
 | writing-great-skills | 写/改 skill 的元理论（leading words、no-op 检验、双负载模型） |
+| agents-map | 勘测陌生仓库取证，再成图：一份可读的报告，或一份薄 AGENTS.md —— 不臆造命令、不拿单个样本当规范 |
+| writing / writing-fragments / writing-shape / writing-beats | 写作 router + 一条 explore 路径（fragments）与两条 exploit 路径（shape / beats） |
 
 `agents/reviewer.md`：只读验收 agent，工具白名单不含编辑能力，maker/checker 分离由权限而非嘱咐保证。它以四种原生形态分发、各为独立文件：Claude Code（`agents/reviewer.md`，工具白名单）、Codex（`.codex/agents/reviewer.toml`，`sandbox_mode = "read-only"`）、OpenCode（`.opencode/agents/reviewer.md`，`permission: edit: deny`）、GitHub Copilot（`.github/agents/reviewer.agent.md`，`tools: [read, search, execute]`，无 `edit` 工具）。每种都在工具/权限层挡住文件编辑，同时保留 shell 以便跑 gate。
 
 实测组件清单与 token 成本（`claude plugin details agent-playbook`）：
 
 ```text
-Skills (12)  bootstrap, delivery, diagnosing-bugs, domain-modeling, grill-me, grill-with-docs,
-             grilling, groundwork, handoff, resolving-merge-conflicts, reviewit,
-             writing-great-skills
+Skills (17)  agents-map, bootstrap, delivery, diagnosing-bugs, domain-modeling, grill-me,
+             grill-with-docs, grilling, groundwork, handoff, resolving-merge-conflicts,
+             reviewit, writing, writing-beats, writing-fragments, writing-great-skills,
+             writing-shape
 Agents (1)   reviewer
 Hooks (0)
-Always-on:   ~1,096 tok   added to every session
+Always-on:   pending re-measure (was ~1,085 tok at 12 skills)
 ```
 
 <a id="zh-quickstart"></a>
@@ -295,7 +302,8 @@ Hook 是可选增强，不是依赖：平台不支持 hooks 时，groundwork 的
 
 ## 来源与致谢
 
-- grilling、grill-me、grill-with-docs、domain-modeling、diagnosing-bugs、resolving-merge-conflicts、handoff、writing-great-skills 源自 [mattpocock/skills](https://github.com/mattpocock/skills)（MIT），部分经过修改（触发词收窄、悬空引用修复、可移植性调整）
+- grilling、grill-me、grill-with-docs、domain-modeling、diagnosing-bugs、resolving-merge-conflicts、handoff、writing-great-skills、writing-fragments、writing-shape、writing-beats 源自 [mattpocock/skills](https://github.com/mattpocock/skills)（MIT），部分经过修改（触发词收窄、悬空引用修复、可移植性调整）；writing 三件套另加了 handoff 澄清以便 `writing` router 驱动，`writing` 本身非上游内容
+- agents-map 为独立实现，其 evidence-first 设计参考了 AGENTS.md 开放格式、[ECC](https://github.com/affaan-m/ECC) 的 `codebase-onboarding` 及 [quokkify](https://github.com/quokkify/skills) 的改编版（均为 MIT）；仅借鉴原则，未复制实质文本
 - groundwork 融合了 karpathy 编码守则、ai-coding-agent-guidelines 的存活条款与 [ponytail](https://github.com/DietrichGebert/ponytail) 极简主义阶梯的精华
 - 多平台插件清单结构参考了 [ponytail](https://github.com/DietrichGebert/ponytail) 与 [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) 的真实实现
 - 工作流设计参考 Anthropic Claude Code 团队关于 loop engineering 的实践（gate、state file、maker/checker 分离、硬停止），部分理念借鉴自 [Trellis](https://github.com/mindfold-ai/Trellis)（状态注入 hook、冷启动、spec 晋升闭环）

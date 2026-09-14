@@ -1,6 +1,6 @@
 ---
 name: bootstrap
-description: Bootstrap a repo into this skill workflow — scan the project, then create STATE.md, a lessons file, and a gate script (scripts/gate.sh or gate.ps1) seeded with the project's real build/test commands. Use when the user says "bootstrap this project", "wire up the skill workflow", "onboard this repo to the workflow", or when groundwork/delivery runs in a repo that has no STATE.md or gate script.
+description: Bootstrap a repo into this skill workflow — scan the project, then create STATE.md, a lessons file, and a gate script (scripts/gate.sh or gate.ps1) seeded with the project's real build/test commands. Use when the user says "bootstrap this project" or "wire up the skill workflow", or when groundwork/delivery runs in a repo that has no STATE.md or gate script.
 ---
 
 # Bootstrap
@@ -38,7 +38,7 @@ If none exists (check root, `.local/`, `docs/`), create one seeded with what the
 
 If no `scripts/gate.*` exists, create one whose language matches the project's shell environment — `scripts/gate.sh` for Unix/macOS/bash projects, `scripts/gate.ps1` for Windows/PowerShell projects (detect from the host OS, the project's CI shell, or an existing script convention); the `templates/` dir ships both. Section 1 runs the project's real check commands from step 1 (FAIL on non-zero exit, print the tail of failing output); section 2 checks git state (dirty tree → FAIL with "commit your checkpoints"; unpushed / no upstream → WARN); end with `GATE: PASS` / `GATE: FAIL` and exit 0 / 1. Every verdict comes from an exit code — no model judgment inside the gate.
 
-If several check commands are plausible, ask one question with a recommended default. Then **run the gate once and report the verdict** — an unverified gate is not a gate.
+If several check commands are plausible, ask one question with a recommended default; where `agents-map` happens to be installed, its verification step settles this from CI and repo-owned scripts rather than from a guess. Then **run the gate once and report the verdict** — an unverified gate is not a gate.
 
 ## 4. Lessons
 
