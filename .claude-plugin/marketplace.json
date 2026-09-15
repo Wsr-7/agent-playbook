@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "agent-playbook",
-      "description": "12-skill engineering workflow: ground rules, delivery, gated review, elicitation, debugging.",
+      "description": "Engineering workflow skills: ground rules, delivery, gated review, elicitation, debugging, repo survey, long-form writing.",
       "source": "./",
       "category": "productivity",
       "tags": ["workflow", "code-review", "tdd", "productivity"]

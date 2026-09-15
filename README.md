@@ -73,7 +73,7 @@ Skills (17)  agents-map, bootstrap, delivery, diagnosing-bugs, domain-modeling, 
              writing-shape
 Agents (1)   reviewer
 Hooks (0)
-Always-on:   pending re-measure (was ~1,085 tok at 12 skills)
+Always-on:   ~1,336 tok   added to every session
 ```
 
 ## Quick Start
@@ -232,7 +232,7 @@ Skills (17)  agents-map, bootstrap, delivery, diagnosing-bugs, domain-modeling, 
              writing-shape
 Agents (1)   reviewer
 Hooks (0)
-Always-on:   pending re-measure (was ~1,085 tok at 12 skills)
+Always-on:   ~1,336 tok   added to every session
 ```
 
 <a id="zh-quickstart"></a>
